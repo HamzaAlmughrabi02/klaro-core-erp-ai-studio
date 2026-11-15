@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+:root {
+  --klaro-navy: #1A2B4A;
+  --klaro-green: #2ECC71;
+  --klaro-orange: #FF7A00;
+  --klaro-fog: #F3F5F7;
+  --klaro-white: #FFFFFF;
+}
+
+@layer base {
+  html {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  html[dir="ltr"] body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  html[dir="rtl"] body {
+    font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    background-color: var(--klaro-white);
+    color: var(--klaro-navy);
+  }
+
+  h1 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  h2, h3 {
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+}
+
+@layer components {
+  .klaro-card-interactive {
+    @apply rounded-xl shadow-sm border border-slate-200 transition-all duration-200 hover:shadow-md hover:-translate-y-1;
+  }
+
+  .klaro-table-row {
+    @apply hover:bg-slate-50 transition-colors duration-200 cursor-pointer;
+  }
+
+  .klaro-btn-primary {
+    @apply bg-[#FF7A00] hover:bg-[#e56e00] text-white font-semibold transition-all duration-150 hover:scale-105 active:scale-95 hover:brightness-105;
+  }
+
+  .klaro-btn-interactive {
+    @apply transition-all duration-150 hover:scale-105 active:scale-95 hover:brightness-105;
+  }
+}
+
+.font-mono-tabular {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,295 @@
+{
+  "entities": {
+    "Role": {
+      "title": "Role",
+      "description": "RBAC role definition with bilingual labels and explicit permission keys.",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "enum": ["ADMIN", "ACCOUNTANT", "EMPLOYEE"],
+          "description": "Unique role code."
+        },
+        "nameEn": { "type": "string", "minLength": 2, "maxLength": 60 },
+        "nameAr": { "type": "string", "minLength": 2, "maxLength": 60 },
+        "descriptionEn": { "type": "string", "maxLength": 240 },
+        "descriptionAr": { "type": "string", "maxLength": 240 },
+        "permissions": {
+          "type": "array",
+          "description": "Bounded list of RBAC permission strings."
+        },
+        "workspaceId": { "type": "string", "minLength": 3, "maxLength": 64 }
+      },
+      "required": ["code", "nameEn", "nameAr", "permissions", "workspaceId"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "ERP user profile linked to Firebase Auth UID with assigned RBAC role.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 3, "maxLength": 128 },
+        "email": { "type": "string", "format": "email", "maxLength": 160 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "roleCode": {
+          "type": "string",
+          "enum": ["ADMIN", "ACCOUNTANT", "EMPLOYEE"]
+        },
+        "isActive": { "type": "boolean" },
+        "workspaceId": { "type": "string", "minLength": 3, "maxLength": 64 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "displayName", "roleCode", "isActive", "workspaceId", "createdAt", "updatedAt"]
+    },
+    "Party": {
+      "title": "Party",
+      "description": "Abstract counterparty entity representing a Client, Supplier, or Employee.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "partyType": {
+          "type": "string",
+          "enum": ["CLIENT", "SUPPLIER", "EMPLOYEE"]
+        },
+        "contactStatus": {
+          "type": "string",
+          "enum": ["ACTIVE", "INACTIVE", "PENDING"]
+        },
+        "email": { "type": "string", "maxLength": 160 },
+        "phone": { "type": "string", "maxLength": 40 },
+        "customAttributes": {
+          "type": "object",
+          "description": "Validated dynamic custom field values keyed by fieldKey."
+        },
+        "workspaceId": { "type": "string", "minLength": 3, "maxLength": 64 },
+        "createdBy": { "type": "string", "minLength": 3, "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "partyType", "contactStatus", "workspaceId", "createdBy", "createdAt", "updatedAt"]
+    },
+    "Item": {
+      "title": "Item",
+      "description": "Abstract catalog entity representing a generic Product or Service.",
+      "type": "object",
+      "properties": {
+        "code": { "type": "string", "minLength": 2, "maxLength": 40 },
+        "name": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "itemType": {
+          "type": "string",
+          "enum": ["PRODUCT", "SERVICE"]
+        },
+        "unit": { "type": "string", "minLength": 1, "maxLength": 32 },
+        "customAttributes": {
+          "type": "object",
+          "description": "Validated dynamic custom field values keyed by fieldKey."
+        },
+        "workspaceId": { "type": "string", "minLength": 3, "maxLength": 64 },
+        "createdBy": { "type": "string", "minLength": 3, "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["code", "name", "itemType", "unit", "workspaceId", "createdBy", "createdAt", "updatedAt"]
+    },
+    "ErpDocument": {
+      "title": "ErpDocument",
+      "description": "Generic operational document linking a Party and Item lines with Workflow status.",
+      "type": "object",
+      "properties": {
+        "docNumber": { "type": "string", "minLength": 3, "maxLength": 40 },
+        "docType": {
+          "type": "string",
+          "enum": ["DRAFT_INVOICE", "PURCHASE_ORDER", "GENERIC_DOC"]
+        },
+        "partyId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "partyName": { "type": "string", "minLength": 1, "maxLength": 140 },
+        "status": {
+          "type": "string",
+          "enum": ["DRAFT", "APPROVED", "REJECTED"]
+        },
+        "notes": { "type": "string", "maxLength": 500 },
+        "lines": {
+          "type": "array",
+          "description": "Bounded list of item lines (1..25) referencing Items."
+        },
+        "customAttributes": { "type": "object" },
+        "workspaceId": { "type": "string", "minLength": 3, "maxLength": 64 },
+        "createdBy": { "type": "string", "minLength": 3, "maxLength": 128 },
+        "createdByName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "approvedBy": { "type": "string", "maxLength": 128 },
+        "approvedByName": { "type": "string", "maxLength": 100 },
+        "approvedAt": { "type": "string", "format": "date-time" },
+        "rejectedBy": { "type": "string", "maxLength": 128 },
+        "rejectedByName": { "type": "string", "maxLength": 100 },
+        "rejectedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["docNumber", "docType", "partyId", "partyName", "status", "lines", "workspaceId", "createdBy", "createdByName", "createdAt", "updatedAt"]
+    },
+    "CustomFieldDefinition": {
+      "title": "CustomFieldDefinition",
+      "description": "Zero-code dynamic attribute schema targeting PARTY, ITEM, or DOCUMENT.",
+      "type": "object",
+      "properties": {
+        "entityType": {
+          "type": "string",
+          "enum": ["PARTY", "ITEM", "DOCUMENT"]
+        },
+        "fieldKey": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 48,
+          "pattern": "^[a-z][a-z0-9_]*$"
+        },
+        "labelEn": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "labelAr": { "type": "string", "minLength": 1, "maxLength": 80 },
+        "fieldType": {
+          "type": "string",
+          "enum": ["TEXT", "NUMBER", "SELECT", "DATE", "BOOLEAN"]
+        },
+        "options": {
+          "type": "array",
+          "description": "Optional list of choices when fieldType is SELECT."
+        },
+        "isRequired": { "type": "boolean" },
+        "isActive": { "type": "boolean" },
+        "workspaceId": { "type": "string", "minLength": 3, "maxLength": 64 },
+        "createdBy": { "type": "string", "minLength": 3, "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["entityType", "fieldKey", "labelEn", "labelAr", "fieldType", "isRequired", "workspaceId", "createdBy", "createdAt"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable workflow and governance audit trail record.",
+      "type": "object",
+      "properties": {
+        "actorUid": { "type": "string", "minLength": 3, "maxLength": 128 },
+        "actorName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "entityType": {
+          "type": "string",
+          "enum": ["PARTY", "ITEM", "DOCUMENT", "CUSTOM_FIELD", "USER", "SYSTEM_SETTINGS", "TEMPORARY_PERMISSION"]
+        },
+        "entityId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "entityLabel": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "action": {
+          "type": "string",
+          "enum": ["CREATED", "UPDATED", "STATUS_CHANGED", "DELETED", "ROLE_UPDATED", "PERMISSION_GRANTED", "PERMISSION_REVOKED"]
+        },
+        "fromStatus": { "type": "string", "maxLength": 40 },
+        "toStatus": { "type": "string", "maxLength": 40 },
+        "workspaceId": { "type": "string", "minLength": 3, "maxLength": 64 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["actorUid", "actorName", "entityType", "entityId", "entityLabel", "action", "workspaceId", "createdAt"]
+    },
+    "SystemMeta": {
+      "title": "SystemMeta",
+      "description": "Workspace bootstrap marker to ensure idempotent sample seeding.",
+      "type": "object",
+      "properties": {
+        "seeded": { "type": "boolean" },
+        "workspaceId": { "type": "string", "minLength": 3, "maxLength": 64 },
+        "seededBy": { "type": "string", "minLength": 3, "maxLength": 128 },
+        "seededAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["seeded", "workspaceId", "seededBy", "seededAt"]
+    },
+    "SystemSettings": {
+      "title": "SystemSettings",
+      "description": "On-premise organization configuration (Company Name, Logo, Default Currency).",
+      "type": "object",
+      "properties": {
+        "companyName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "companyNameAr": { "type": "string", "maxLength": 120 },
+        "logoDataUrl": { "type": "string", "maxLength": 150000 },
+        "defaultCurrency": { "type": "string", "minLength": 3, "maxLength": 8 },
+        "workspaceId": { "type": "string", "minLength": 3, "maxLength": 64 },
+        "updatedBy": { "type": "string", "minLength": 3, "maxLength": 128 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["companyName", "defaultCurrency", "workspaceId", "updatedBy", "updatedAt"]
+    },
+    "TemporaryPermission": {
+      "title": "TemporaryPermission",
+      "description": "Just-in-time temporary RBAC permission delegation with enforced expiration timestamp.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "minLength": 3, "maxLength": 128 },
+        "userEmail": { "type": "string", "format": "email", "maxLength": 160 },
+        "userName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "permission": {
+          "type": "string",
+          "enum": [
+            "entities:read",
+            "entities:write",
+            "entities:delete",
+            "documents:create",
+            "documents:approve",
+            "config:manage",
+            "iam:manage"
+          ]
+        },
+        "grantedById": { "type": "string", "minLength": 3, "maxLength": 128 },
+        "grantedByName": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "workspaceId": { "type": "string", "minLength": 3, "maxLength": 64 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "userId",
+        "userEmail",
+        "userName",
+        "permission",
+        "grantedById",
+        "grantedByName",
+        "expiresAt",
+        "workspaceId",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/roles/{roleId}": {
+      "schema": { "$ref": "#/entities/Role" },
+      "description": "RBAC Role definitions (ADMIN, ACCOUNTANT, EMPLOYEE)."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profiles mapped to Firebase Auth UIDs and RBAC roles."
+    },
+    "/parties/{partyId}": {
+      "schema": { "$ref": "#/entities/Party" },
+      "description": "Abstract Contacts & Directory (Client, Supplier, Employee)."
+    },
+    "/items/{itemId}": {
+      "schema": { "$ref": "#/entities/Item" },
+      "description": "Abstract Products & Services catalog."
+    },
+    "/documents/{documentId}": {
+      "schema": { "$ref": "#/entities/ErpDocument" },
+      "description": "Generic Documents linking Contacts and Products with Workflow status."
+    },
+    "/customFieldDefinitions/{fieldId}": {
+      "schema": { "$ref": "#/entities/CustomFieldDefinition" },
+      "description": "Customization Studio custom field registry."
+    },
+    "/auditLogs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Immutable audit log entries."
+    },
+    "/systemMeta/{metaId}": {
+      "schema": { "$ref": "#/entities/SystemMeta" },
+      "description": "Bootstrap seeding status."
+    },
+    "/systemSettings/{settingsId}": {
+      "schema": { "$ref": "#/entities/SystemSettings" },
+      "description": "On-premise organization branding and default currency settings."
+    },
+    "/temporaryPermissions/{delegationId}": {
+      "schema": { "$ref": "#/entities/TemporaryPermission" },
+      "description": "Just-in-time temporary permission delegations keyed by userId__permission."
+    }
+  }
+}

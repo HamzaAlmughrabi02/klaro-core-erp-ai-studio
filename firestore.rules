@@ -1,0 +1,454 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // -------------------------------------------------------------------------
+    // Global Safety Net (Default Deny)
+    // -------------------------------------------------------------------------
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // -------------------------------------------------------------------------
+    // Reusable Primitives & RBAC Helpers
+    // -------------------------------------------------------------------------
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isBootstrapAdminEmail() {
+      return isVerifiedUser() && request.auth.token.email == 'hamzaalmughrabi6@gmail.com';
+    }
+
+    function userDocPath() {
+      return /databases/$(database)/documents/users/$(request.auth.uid);
+    }
+
+    function userExists() {
+      return isSignedIn() && exists(userDocPath());
+    }
+
+    function userRole() {
+      return get(userDocPath()).data.roleCode;
+    }
+
+    function userActive() {
+      return get(userDocPath()).data.isActive == true;
+    }
+
+    function isAdmin() {
+      return isVerifiedUser() && (
+        isBootstrapAdminEmail() ||
+        (userExists() && userActive() && userRole() == 'ADMIN')
+      );
+    }
+
+    function isAccountant() {
+      return isVerifiedUser() && userExists() && userActive() && userRole() == 'ACCOUNTANT';
+    }
+
+    function isEmployee() {
+      return isVerifiedUser() && userExists() && userActive() && userRole() == 'EMPLOYEE';
+    }
+
+    function isWorkspaceMember() {
+      return isAdmin() || isAccountant() || isEmployee();
+    }
+
+    function isValidWorkspace(data) {
+      return data.workspaceId is string && data.workspaceId == 'klaro-core';
+    }
+
+    function tempPermDocPath(permKey) {
+      return /databases/$(database)/documents/temporaryPermissions/$(request.auth.uid + '__' + permKey);
+    }
+
+    function hasTempPermission(permKey) {
+      return isVerifiedUser()
+        && exists(tempPermDocPath(permKey))
+        && get(tempPermDocPath(permKey)).data.userId == request.auth.uid
+        && get(tempPermDocPath(permKey)).data.expiresAt > request.time;
+    }
+
+    // -------------------------------------------------------------------------
+    // Entity Validation Blueprints
+    // -------------------------------------------------------------------------
+    function isValidRole(data) {
+      return data.keys().hasAll(['code', 'nameEn', 'nameAr', 'permissions', 'workspaceId'])
+        && data.keys().hasOnly(['code', 'nameEn', 'nameAr', 'descriptionEn', 'descriptionAr', 'permissions', 'workspaceId'])
+        && data.code in ['ADMIN', 'ACCOUNTANT', 'EMPLOYEE']
+        && data.nameEn is string && data.nameEn.size() >= 2 && data.nameEn.size() <= 60
+        && data.nameAr is string && data.nameAr.size() >= 2 && data.nameAr.size() <= 60
+        && (!('descriptionEn' in data) || (data.descriptionEn is string && data.descriptionEn.size() <= 240))
+        && (!('descriptionAr' in data) || (data.descriptionAr is string && data.descriptionAr.size() <= 240))
+        && data.permissions is list && data.permissions.size() >= 1 && data.permissions.size() <= 15
+        && data.permissions[0] is string
+        && isValidWorkspace(data);
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'displayName', 'roleCode', 'isActive', 'workspaceId', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'email', 'displayName', 'roleCode', 'isActive', 'workspaceId', 'createdAt', 'updatedAt'])
+        && isValidId(data.uid)
+        && data.email is string && data.email.size() >= 3 && data.email.size() <= 160
+        && data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 100
+        && data.roleCode in ['ADMIN', 'ACCOUNTANT', 'EMPLOYEE']
+        && data.isActive is bool
+        && isValidWorkspace(data)
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidParty(data) {
+      return data.keys().hasAll(['name', 'partyType', 'contactStatus', 'workspaceId', 'createdBy', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['name', 'partyType', 'contactStatus', 'email', 'phone', 'customAttributes', 'workspaceId', 'createdBy', 'createdAt', 'updatedAt'])
+        && data.name is string && data.name.size() >= 2 && data.name.size() <= 140
+        && data.partyType in ['CLIENT', 'SUPPLIER', 'EMPLOYEE']
+        && data.contactStatus in ['ACTIVE', 'INACTIVE', 'PENDING']
+        && (!('email' in data) || (data.email is string && data.email.size() <= 160))
+        && (!('phone' in data) || (data.phone is string && data.phone.size() <= 40))
+        && (!('customAttributes' in data) || (data.customAttributes is map && data.customAttributes.size() <= 30))
+        && isValidWorkspace(data)
+        && isValidId(data.createdBy)
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidItem(data) {
+      return data.keys().hasAll(['code', 'name', 'itemType', 'unit', 'workspaceId', 'createdBy', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['code', 'name', 'itemType', 'unit', 'customAttributes', 'workspaceId', 'createdBy', 'createdAt', 'updatedAt'])
+        && data.code is string && data.code.size() >= 2 && data.code.size() <= 40
+        && data.name is string && data.name.size() >= 2 && data.name.size() <= 140
+        && data.itemType in ['PRODUCT', 'SERVICE']
+        && data.unit is string && data.unit.size() >= 1 && data.unit.size() <= 32
+        && (!('customAttributes' in data) || (data.customAttributes is map && data.customAttributes.size() <= 30))
+        && isValidWorkspace(data)
+        && isValidId(data.createdBy)
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidDocument(data) {
+      return data.keys().hasAll(['docNumber', 'docType', 'partyId', 'partyName', 'status', 'lines', 'workspaceId', 'createdBy', 'createdByName', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['docNumber', 'docType', 'partyId', 'partyName', 'status', 'notes', 'lines', 'customAttributes', 'workspaceId', 'createdBy', 'createdByName', 'approvedBy', 'approvedByName', 'approvedAt', 'rejectedBy', 'rejectedByName', 'rejectedAt', 'createdAt', 'updatedAt'])
+        && data.docNumber is string && data.docNumber.size() >= 3 && data.docNumber.size() <= 40
+        && data.docType in ['DRAFT_INVOICE', 'PURCHASE_ORDER', 'GENERIC_DOC']
+        && isValidId(data.partyId)
+        && data.partyName is string && data.partyName.size() >= 1 && data.partyName.size() <= 140
+        && data.status in ['DRAFT', 'APPROVED', 'REJECTED']
+        && (!('notes' in data) || (data.notes is string && data.notes.size() <= 500))
+        && data.lines is list && data.lines.size() >= 1 && data.lines.size() <= 25
+        && data.lines[0] is map
+        && data.lines[0].keys().hasAll(['itemId', 'itemCode', 'itemName', 'unit', 'quantity'])
+        && (!('customAttributes' in data) || (data.customAttributes is map && data.customAttributes.size() <= 30))
+        && isValidWorkspace(data)
+        && isValidId(data.createdBy)
+        && data.createdByName is string && data.createdByName.size() >= 1 && data.createdByName.size() <= 100
+        && (!('approvedBy' in data) || isValidId(data.approvedBy))
+        && (!('approvedByName' in data) || (data.approvedByName is string && data.approvedByName.size() <= 100))
+        && (!('approvedAt' in data) || data.approvedAt is timestamp)
+        && (!('rejectedBy' in data) || isValidId(data.rejectedBy))
+        && (!('rejectedByName' in data) || (data.rejectedByName is string && data.rejectedByName.size() <= 100))
+        && (!('rejectedAt' in data) || data.rejectedAt is timestamp)
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidCustomField(data) {
+      return data.keys().hasAll(['entityType', 'fieldKey', 'labelEn', 'labelAr', 'fieldType', 'isRequired', 'workspaceId', 'createdBy', 'createdAt'])
+        && data.keys().hasOnly(['entityType', 'fieldKey', 'labelEn', 'labelAr', 'fieldType', 'options', 'isRequired', 'isActive', 'workspaceId', 'createdBy', 'createdAt'])
+        && data.entityType in ['PARTY', 'ITEM', 'DOCUMENT']
+        && data.fieldKey is string && data.fieldKey.size() >= 2 && data.fieldKey.size() <= 48 && data.fieldKey.matches('^[a-z][a-z0-9_]*$')
+        && data.labelEn is string && data.labelEn.size() >= 1 && data.labelEn.size() <= 80
+        && data.labelAr is string && data.labelAr.size() >= 1 && data.labelAr.size() <= 80
+        && data.fieldType in ['TEXT', 'NUMBER', 'SELECT', 'DATE', 'BOOLEAN']
+        && (!('options' in data) || (data.options is list && data.options.size() <= 20))
+        && data.isRequired is bool
+        && (!('isActive' in data) || data.isActive is bool)
+        && isValidWorkspace(data)
+        && isValidId(data.createdBy)
+        && data.createdAt is timestamp;
+    }
+
+    function isValidAuditLog(data) {
+      return data.keys().hasAll(['actorUid', 'actorName', 'entityType', 'entityId', 'entityLabel', 'action', 'workspaceId', 'createdAt'])
+        && data.keys().hasOnly(['actorUid', 'actorName', 'entityType', 'entityId', 'entityLabel', 'action', 'fromStatus', 'toStatus', 'workspaceId', 'createdAt'])
+        && isValidId(data.actorUid)
+        && data.actorName is string && data.actorName.size() >= 1 && data.actorName.size() <= 100
+        && data.entityType in ['PARTY', 'ITEM', 'DOCUMENT', 'CUSTOM_FIELD', 'USER', 'SYSTEM_SETTINGS', 'TEMPORARY_PERMISSION']
+        && isValidId(data.entityId)
+        && data.entityLabel is string && data.entityLabel.size() >= 1 && data.entityLabel.size() <= 160
+        && data.action in ['CREATED', 'UPDATED', 'STATUS_CHANGED', 'DELETED', 'ROLE_UPDATED', 'PERMISSION_GRANTED', 'PERMISSION_REVOKED']
+        && (!('fromStatus' in data) || (data.fromStatus is string && data.fromStatus.size() <= 40))
+        && (!('toStatus' in data) || (data.toStatus is string && data.toStatus.size() <= 40))
+        && isValidWorkspace(data)
+        && data.createdAt is timestamp;
+    }
+
+    function isValidSystemSettings(data) {
+      return data.keys().hasAll(['companyName', 'defaultCurrency', 'workspaceId', 'updatedBy', 'updatedAt'])
+        && data.keys().hasOnly(['companyName', 'companyNameAr', 'logoDataUrl', 'defaultCurrency', 'workspaceId', 'updatedBy', 'updatedAt'])
+        && data.companyName is string && data.companyName.size() >= 1 && data.companyName.size() <= 120
+        && (!('companyNameAr' in data) || (data.companyNameAr is string && data.companyNameAr.size() <= 120))
+        && (!('logoDataUrl' in data) || (data.logoDataUrl is string && data.logoDataUrl.size() <= 150000))
+        && data.defaultCurrency is string && data.defaultCurrency.size() >= 3 && data.defaultCurrency.size() <= 8
+        && isValidWorkspace(data)
+        && isValidId(data.updatedBy)
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidTemporaryPermission(data) {
+      return data.keys().hasAll(['userId', 'userEmail', 'userName', 'permission', 'grantedById', 'grantedByName', 'expiresAt', 'workspaceId', 'createdAt'])
+        && data.keys().hasOnly(['userId', 'userEmail', 'userName', 'permission', 'grantedById', 'grantedByName', 'expiresAt', 'workspaceId', 'createdAt'])
+        && isValidId(data.userId)
+        && data.userEmail is string && data.userEmail.size() >= 3 && data.userEmail.size() <= 160
+        && data.userName is string && data.userName.size() >= 1 && data.userName.size() <= 100
+        && data.permission in ['entities:read', 'entities:write', 'entities:delete', 'documents:create', 'documents:approve', 'config:manage', 'iam:manage']
+        && isValidId(data.grantedById)
+        && data.grantedByName is string && data.grantedByName.size() >= 1 && data.grantedByName.size() <= 100
+        && data.expiresAt is timestamp
+        && data.expiresAt > request.time
+        && isValidWorkspace(data)
+        && data.createdAt is timestamp;
+    }
+
+    // -------------------------------------------------------------------------
+    // Collection Match Rules
+    // -------------------------------------------------------------------------
+
+    function isWorkspaceNotSeeded() {
+      return !exists(/databases/$(database)/documents/systemMeta/bootstrap);
+    }
+
+    // Roles: readable by signed-in workspace members, mutable by Admin or during initial bootstrap
+    match /roles/{roleId} {
+      allow get: if isValidId(roleId) && isWorkspaceMember();
+      allow list: if isVerifiedUser() && existing().workspaceId == 'klaro-core';
+      allow create: if isValidId(roleId) && (isAdmin() || (isVerifiedUser() && isWorkspaceNotSeeded())) && isValidRole(incoming());
+      allow update: if isValidId(roleId) && isAdmin() && isValidRole(incoming());
+      allow delete: if isValidId(roleId) && isAdmin();
+    }
+
+    // Users (PII Protected): Owner can read self; Admin can read/manage all
+    match /users/{userId} {
+      allow get: if isValidId(userId) && isVerifiedUser() && (isOwner(userId) || isAdmin());
+      allow list: if isVerifiedUser() && (existing().uid == request.auth.uid || isBootstrapAdminEmail());
+      allow create: if isValidId(userId) && isVerifiedUser() && isValidUser(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin() ||
+          (isWorkspaceNotSeeded()) ||
+          (
+            isOwner(userId)
+            && incoming().uid == request.auth.uid
+            && incoming().email == request.auth.token.email
+            && incoming().isActive == true
+            && (
+              (isBootstrapAdminEmail() && incoming().roleCode == 'ADMIN') ||
+              incoming().roleCode == 'EMPLOYEE'
+            )
+          )
+        );
+      allow update: if isValidId(userId) && isVerifiedUser() && isValidUser(incoming())
+        && incoming().uid == existing().uid
+        && incoming().email == existing().email
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin() ||
+          (
+            isOwner(userId)
+            && incoming().roleCode == existing().roleCode
+            && incoming().isActive == existing().isActive
+            && incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'updatedAt'])
+          )
+        );
+      allow delete: if isValidId(userId) && isAdmin() && userId != request.auth.uid;
+    }
+
+    // Parties: All workspace members can read/create/update; only Admin can delete
+    match /parties/{partyId} {
+      allow get: if isValidId(partyId) && isWorkspaceMember();
+      allow list: if isVerifiedUser() && existing().workspaceId == 'klaro-core';
+      allow create: if isValidId(partyId) && isWorkspaceMember() && isValidParty(incoming())
+        && incoming().createdBy == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(partyId) && isWorkspaceMember() && isValidParty(incoming())
+        && incoming().createdBy == existing().createdBy
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly(['name', 'partyType', 'contactStatus', 'email', 'phone', 'customAttributes', 'updatedAt']);
+      allow delete: if isValidId(partyId) && (isAdmin() || hasTempPermission('entities_delete'));
+    }
+
+    // Items: All workspace members can read/create/update; Admin or JIT entities:delete can delete
+    match /items/{itemId} {
+      allow get: if isValidId(itemId) && isWorkspaceMember();
+      allow list: if isVerifiedUser() && existing().workspaceId == 'klaro-core';
+      allow create: if isValidId(itemId) && isWorkspaceMember() && isValidItem(incoming())
+        && incoming().createdBy == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(itemId) && isWorkspaceMember() && isValidItem(incoming())
+        && incoming().createdBy == existing().createdBy
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly(['code', 'name', 'itemType', 'unit', 'customAttributes', 'updatedAt']);
+      allow delete: if isValidId(itemId) && (isAdmin() || hasTempPermission('entities_delete'));
+    }
+
+    // Documents & Workflow Engine:
+    // - Created strictly in DRAFT state referencing an existing Party
+    // - Editable only while DRAFT
+    // - Transition DRAFT -> APPROVED allowed only for ADMIN or ACCOUNTANT
+    // - Terminal State Lock once APPROVED (only Admin can override if ever needed, or strictly locked)
+    match /documents/{documentId} {
+      allow get: if isValidId(documentId) && isWorkspaceMember();
+      allow list: if isVerifiedUser() && existing().workspaceId == 'klaro-core';
+      allow create: if isValidId(documentId) && isWorkspaceMember() && isValidDocument(incoming())
+        && incoming().status == 'DRAFT'
+        && incoming().createdBy == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time
+        && exists(/databases/$(database)/documents/parties/$(incoming().partyId));
+      allow update: if isValidId(documentId) && isWorkspaceMember() && isValidDocument(incoming())
+        && incoming().createdBy == existing().createdBy
+        && incoming().createdByName == existing().createdByName
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          // Action 1: Edit Draft fields (only while status remains DRAFT)
+          (
+            existing().status == 'DRAFT'
+            && incoming().status == 'DRAFT'
+            && incoming().diff(existing()).affectedKeys().hasOnly(['docNumber', 'docType', 'partyId', 'partyName', 'notes', 'lines', 'customAttributes', 'updatedAt'])
+          )
+          ||
+          // Action 2: Workflow Approval Transition (DRAFT -> APPROVED by Admin, Accountant, JIT documents:approve, or initial bootstrap)
+          (
+            existing().status == 'DRAFT'
+            && incoming().status == 'APPROVED'
+            && (isAdmin() || isAccountant() || hasTempPermission('documents_approve') || isWorkspaceNotSeeded())
+            && incoming().approvedBy == request.auth.uid
+            && incoming().approvedAt == request.time
+            && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'approvedBy', 'approvedByName', 'approvedAt', 'updatedAt'])
+          )
+          ||
+          // Action 3: Workflow Rejection Transition (DRAFT -> REJECTED by Admin, Accountant, or JIT documents:approve)
+          (
+            existing().status == 'DRAFT'
+            && incoming().status == 'REJECTED'
+            && (isAdmin() || isAccountant() || hasTempPermission('documents_approve'))
+            && incoming().rejectedBy == request.auth.uid
+            && incoming().rejectedAt == request.time
+            && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'rejectedBy', 'rejectedByName', 'rejectedAt', 'updatedAt'])
+          )
+        );
+      allow delete: if isValidId(documentId) && (isAdmin() || hasTempPermission('entities_delete')) && existing().status == 'DRAFT';
+    }
+
+    // Configuration Engine (Custom Field Definitions): Workspace-member accessible for Preview testing
+    match /customFieldDefinitions/{fieldId} {
+      allow get: if isValidId(fieldId) && isWorkspaceMember();
+      allow list: if isVerifiedUser() && existing().workspaceId == 'klaro-core';
+      allow create: if isValidId(fieldId) && isWorkspaceMember() && isValidCustomField(incoming())
+        && incoming().createdBy == request.auth.uid
+        && incoming().createdAt == request.time;
+      allow update: if isValidId(fieldId) && isWorkspaceMember() && isValidCustomField(incoming())
+        && incoming().createdBy == existing().createdBy
+        && incoming().createdAt == existing().createdAt
+        && incoming().diff(existing()).affectedKeys().hasOnly(['labelEn', 'labelAr', 'options', 'isRequired', 'isActive']);
+      allow delete: if isValidId(fieldId) && isWorkspaceMember();
+    }
+
+    // Audit Logs: Append-only immutable trail
+    match /auditLogs/{logId} {
+      allow get: if isValidId(logId) && isWorkspaceMember();
+      allow list: if isVerifiedUser() && existing().workspaceId == 'klaro-core';
+      allow create: if isValidId(logId) && isWorkspaceMember() && isValidAuditLog(incoming())
+        && incoming().actorUid == request.auth.uid
+        && incoming().createdAt == request.time;
+      allow update, delete: if false;
+    }
+
+    // Bootstrap seeding marker
+    match /systemMeta/{metaId} {
+      allow get: if isValidId(metaId) && isVerifiedUser();
+      allow list: if false;
+      allow create: if isValidId(metaId) && isVerifiedUser()
+        && incoming().keys().hasAll(['seeded', 'workspaceId', 'seededBy', 'seededAt'])
+        && incoming().keys().hasOnly(['seeded', 'workspaceId', 'seededBy', 'seededAt'])
+        && incoming().seeded is bool
+        && isValidWorkspace(incoming())
+        && incoming().seededBy == request.auth.uid
+        && incoming().seededAt == request.time;
+      allow update, delete: if false;
+    }
+
+    // On-Premise System Settings: Readable by workspace members, mutable by Admin
+    match /systemSettings/{settingsId} {
+      allow get: if isValidId(settingsId) && isWorkspaceMember();
+      allow list: if isVerifiedUser() && existing().workspaceId == 'klaro-core';
+      allow create: if isValidId(settingsId) && (isAdmin() || (isVerifiedUser() && isWorkspaceNotSeeded()))
+        && isValidSystemSettings(incoming())
+        && incoming().updatedBy == request.auth.uid
+        && incoming().updatedAt == request.time;
+      allow update: if isValidId(settingsId) && isAdmin()
+        && isValidSystemSettings(incoming())
+        && incoming().updatedBy == request.auth.uid
+        && incoming().updatedAt == request.time;
+      allow delete: if false;
+    }
+
+    // Just-In-Time Temporary Permission Delegations:
+    // - Admins (or JIT iam:manage holders) can create/update/list/revoke delegations.
+    // - Non-admin users can read their own delegations and clean up their own expired records.
+    match /temporaryPermissions/{delegationId} {
+      allow get: if isValidId(delegationId) && isVerifiedUser()
+        && (existing().userId == request.auth.uid || isAdmin() || hasTempPermission('iam_manage'));
+      allow list: if isVerifiedUser() && (
+        existing().userId == request.auth.uid ||
+        existing().grantedById == request.auth.uid ||
+        isBootstrapAdminEmail()
+      );
+      allow create: if isValidId(delegationId)
+        && (isAdmin() || hasTempPermission('iam_manage'))
+        && isValidTemporaryPermission(incoming())
+        && incoming().grantedById == request.auth.uid
+        && incoming().createdAt == request.time;
+      allow update: if isValidId(delegationId)
+        && (isAdmin() || hasTempPermission('iam_manage'))
+        && isValidTemporaryPermission(incoming())
+        && incoming().grantedById == request.auth.uid
+        && incoming().createdAt == request.time;
+      allow delete: if isValidId(delegationId) && (
+        isAdmin() ||
+        hasTempPermission('iam_manage') ||
+        (isVerifiedUser() && existing().userId == request.auth.uid && existing().expiresAt <= request.time)
+      );
+    }
+  }
+}

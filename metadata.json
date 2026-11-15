@@ -1,0 +1,6 @@
+{
+  "name": "Klaro Core ERP",
+  "description": "Industry-agnostic Core Enterprise Resource Planning engine featuring abstract Parties, Items, Generic Documents, Workflow & Audit engine, Dynamic Custom Fields, RBAC, and bilingual EN/AR support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
