@@ -37,6 +37,8 @@ export const TRANSLATIONS = {
     navArchitectureSub: 'Architecture, engines & fields',
     navSettings: 'System Settings',
     navSettingsSub: 'Workspace identity & currency',
+    navGroupOperations: 'Operations',
+    navGroupAdmin: 'Administration',
 
     signOut: 'Sign Out',
     collapseSidebar: 'Collapse Sidebar',
@@ -349,6 +351,8 @@ export const TRANSLATIONS = {
     navArchitectureSub: 'المعمارية والمحركات والحقول',
     navSettings: 'إعدادات النظام',
     navSettingsSub: 'هوية المنظومة والعملة الافتراضية',
+    navGroupOperations: 'التشغيل',
+    navGroupAdmin: 'الإدارة',
 
     signOut: 'تسجيل الخروج',
     collapseSidebar: 'طي القائمة الجانبية',

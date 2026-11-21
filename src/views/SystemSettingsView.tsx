@@ -86,32 +86,32 @@ export function SystemSettingsView() {
     >
       <div className="space-y-1">
         <div className="flex items-center gap-2.5">
-          <Building2 className="w-5 h-5 text-[#1A2B4A]" />
-          <h1 className="text-2xl font-extrabold tracking-tight text-[#1A2B4A]">
+          <Building2 className="w-5 h-5 text-ink" />
+          <h1 className="text-2xl font-extrabold tracking-tight text-ink">
             {tr('settingsTitle')}
           </h1>
         </div>
-        <p className="text-sm text-[#1A2B4A]/65">{tr('settingsSubtitle')}</p>
+        <p className="text-sm text-muted">{tr('settingsSubtitle')}</p>
       </div>
 
       {!canManage && (
-        <div className="px-4 py-3 rounded-lg bg-[#F3F5F7] border border-slate-200 text-xs text-[#1A2B4A]/80">
+        <div className="px-4 py-3 rounded-xl bg-surface border border-line text-xs text-ink/80">
           <strong>{tr('permissionNotice')}:</strong> {tr('readOnlySettingsNotice')}
         </div>
       )}
 
       <form
         onSubmit={(e) => void handleSubmit(e)}
-        className="rounded-xl shadow-sm border border-slate-200 bg-white overflow-hidden"
+        className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden"
       >
         <div className="p-6 space-y-6">
           {/* Corporate Logo Preview & Upload */}
           <div className="space-y-2.5">
-            <label className="block text-xs font-medium text-[#1A2B4A]">
+            <label className="block text-xs font-medium text-ink">
               {tr('companyLogo')}
             </label>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-xl bg-[#F3F5F7] border border-slate-200">
-              <div className="w-14 h-14 rounded-lg bg-white border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-2xl bg-surface border border-line">
+              <div className="w-14 h-14 rounded-xl bg-canvas border border-line flex items-center justify-center overflow-hidden shrink-0">
                 {logoDataUrl ? (
                   <img
                     src={logoDataUrl}
@@ -126,7 +126,7 @@ export function SystemSettingsView() {
 
               <div className="flex-1 space-y-2">
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#1A2B4A] hover:bg-[#1A2B4A]/90 text-white text-xs font-semibold cursor-pointer transition-colors">
+                  <label className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-semibold cursor-pointer transition-colors">
                     <Upload className="w-3.5 h-3.5" />
                     <span>{tr('uploadLogo')}</span>
                     <input
@@ -141,22 +141,22 @@ export function SystemSettingsView() {
                     <button
                       type="button"
                       onClick={() => setLogoDataUrl('')}
-                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-[#1A2B4A] hover:bg-slate-50"
+                      className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-line bg-canvas text-xs font-medium text-ink hover:bg-surface"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
                       <span>{tr('resetLogo')}</span>
                     </button>
                   )}
                 </div>
-                <p className="text-xs text-[#1A2B4A]/60">{tr('logoHint')}</p>
+                <p className="text-xs text-muted">{tr('logoHint')}</p>
               </div>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-[#1A2B4A]">
-                {tr('companyNameEn')} <span className="text-[#FF7A00]">*</span>
+              <label className="block text-xs font-medium text-ink">
+                {tr('companyNameEn')} <span className="text-brand">*</span>
               </label>
               <input
                 type="text"
@@ -165,12 +165,12 @@ export function SystemSettingsView() {
                 maxLength={120}
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                className="w-full h-10 px-3 rounded-xl border border-line text-sm text-ink focus:outline-none focus:border-ink"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-[#1A2B4A]">
+              <label className="block text-xs font-medium text-ink">
                 {tr('companyNameAr')}
               </label>
               <input
@@ -179,20 +179,20 @@ export function SystemSettingsView() {
                 maxLength={120}
                 value={companyNameAr}
                 onChange={(e) => setCompanyNameAr(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                className="w-full h-10 px-3 rounded-xl border border-line text-sm text-ink focus:outline-none focus:border-ink"
               />
             </div>
           </div>
 
           <div className="space-y-1.5 max-w-sm">
-            <label className="block text-xs font-medium text-[#1A2B4A]">
-              {tr('defaultCurrency')} <span className="text-[#FF7A00]">*</span>
+            <label className="block text-xs font-medium text-ink">
+              {tr('defaultCurrency')} <span className="text-brand">*</span>
             </label>
             <select
               disabled={!canManage}
               value={defaultCurrency}
               onChange={(e) => setDefaultCurrency(e.target.value)}
-              className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+              className="w-full h-10 px-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
             >
               {CURRENCIES.map((c) => (
                 <option key={c.code} value={c.code}>
@@ -204,11 +204,11 @@ export function SystemSettingsView() {
         </div>
 
         {canManage && (
-          <div className="px-6 py-4 bg-[#F3F5F7] border-t border-slate-200 flex justify-end">
+          <div className="px-6 py-4 bg-surface border-t border-line flex justify-end">
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2.5 rounded-lg bg-[#FF7A00] hover:bg-[#e56e00] disabled:opacity-60 text-white text-xs font-semibold transition-all duration-150 hover:scale-105 active:scale-95 hover:brightness-105"
+              className="px-5 py-2.5 rounded-xl bg-brand hover:bg-brand-hover disabled:opacity-60 text-white text-xs font-semibold transition-all duration-150 hover:brightness-105"
             >
               {tr('save')}
             </button>

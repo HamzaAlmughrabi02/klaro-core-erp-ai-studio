@@ -257,8 +257,8 @@ export function RetailPosPage() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <Store className="w-5 h-5 text-[#FF7A00]" />
-            <h1 className="text-2xl font-extrabold tracking-tight text-[#1A2B4A]">
+            <Store className="w-5 h-5 text-brand" />
+            <h1 className="text-2xl font-extrabold tracking-tight text-ink">
               {lang === 'ar' ? 'نقطة البيع (حزمة التجزئة)' : 'Retail Point of Sale (POS)'}
             </h1>
             <InfoTooltip
@@ -269,19 +269,19 @@ export function RetailPosPage() {
               }
             />
           </div>
-          <p className="text-sm text-[#1A2B4A]/65">
+          <p className="text-sm text-muted">
             {lang === 'ar'
               ? 'اختر الأصناف من الكتالوج وأنشئ فاتورة مبيعات فورية عبر محرك المستندات.'
               : 'Tap catalog Items on the left to build a live checkout cart and issue an Invoice Document.'}
           </p>
         </div>
 
-        <div className="flex items-center gap-3 text-xs font-medium text-[#1A2B4A]/65 shrink-0">
+        <div className="flex items-center gap-3 text-xs font-medium text-muted shrink-0">
           <span className="tabular-nums">
             {items.length} {lang === 'ar' ? 'صنف متاح' : 'catalog items'}
           </span>
           <span aria-hidden="true">·</span>
-          <span className="font-mono-tabular font-semibold text-[#1A2B4A]">
+          <span className="font-mono-tabular font-semibold text-ink">
             {currency}
           </span>
         </div>

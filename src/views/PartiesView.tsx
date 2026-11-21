@@ -133,19 +133,19 @@ export function PartiesView() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-extrabold tracking-tight text-[#1A2B4A]">
+            <h1 className="text-2xl font-extrabold tracking-tight text-ink">
               {profile?.roleCode === 'EMPLOYEE' ? tr('navPartiesOp') : tr('partiesTitle')}
             </h1>
             {profile?.roleCode !== 'EMPLOYEE' && <InfoTooltip text={tr('partiesTooltip')} />}
           </div>
-          <p className="text-sm text-[#1A2B4A]/65">{tr('partiesSubtitle')}</p>
+          <p className="text-sm text-muted">{tr('partiesSubtitle')}</p>
         </div>
 
         {can('entities:write') && (
           <ActionTooltip label={tr('addNewPartyTitle')} side="bottom">
             <button
               onClick={() => setActiveModule('parties', 'new')}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#FF7A00] hover:bg-[#e56e00] text-white text-xs font-semibold transition-all duration-150 hover:scale-105 active:scale-95 hover:brightness-105 whitespace-nowrap shrink-0 self-start sm:self-auto"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-semibold transition-all duration-150 hover:brightness-105 whitespace-nowrap shrink-0 self-start sm:self-auto"
             >
               <Plus className="w-4 h-4" />
               <span>{tr('addParty')}</span>
@@ -157,7 +157,7 @@ export function PartiesView() {
       {/* Filter & Search Toolbar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Segmented Type Filter */}
-        <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-[#F3F5F7] border border-slate-200 self-start">
+        <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface border border-line self-start">
           {(['ALL', 'CLIENT', 'SUPPLIER', 'EMPLOYEE'] as const).map((type) => {
             const active = typeFilter === type;
             const label = type === 'ALL' ? tr('all') : tr(`type${type}`);
@@ -167,8 +167,8 @@ export function PartiesView() {
                 onClick={() => setTypeFilter(type)}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
                   active
-                    ? 'bg-white text-[#1A2B4A] border border-slate-200/80'
-                    : 'text-[#1A2B4A]/65 hover:text-[#1A2B4A]'
+                    ? 'bg-canvas text-ink border border-line/80'
+                    : 'text-muted hover:text-ink'
                 }`}
               >
                 {label}
@@ -179,23 +179,23 @@ export function PartiesView() {
 
         {/* Live Search */}
         <div className="relative w-full md:w-72">
-          <Search className="w-4 h-4 text-[#1A2B4A]/45 absolute top-1/2 -translate-y-1/2 start-3" />
+          <Search className="w-4 h-4 text-muted absolute top-1/2 -translate-y-1/2 start-3" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={tr('searchPlaceholder')}
-            className="w-full h-10 ps-9 pe-3 rounded-lg border border-slate-200 bg-white text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+            className="w-full h-10 ps-9 pe-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
           />
         </div>
       </div>
 
       {/* High-Density Single-Elevation Data Grid */}
-      <div className="rounded-xl shadow-sm border border-slate-200 bg-white overflow-hidden">
+      <div className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
         {dataLoading && parties.length === 0 ? (
           <div className="p-6 space-y-3">
             {[1, 2, 3, 4].map((r) => (
-              <div key={r} className="h-10 rounded bg-[#F3F5F7] animate-pulse" />
+              <div key={r} className="h-10 rounded bg-surface animate-pulse" />
             ))}
           </div>
         ) : filteredParties.length === 0 ? (
@@ -210,7 +210,7 @@ export function PartiesView() {
           <div className="overflow-x-auto">
             <table className="w-full text-start border-collapse">
               <thead>
-                <tr className="bg-[#F3F5F7] border-b border-slate-200 text-xs font-semibold text-[#1A2B4A]/70">
+                <tr className="bg-canvas border-b border-line text-xs font-semibold text-ink/70">
                   <th className="py-3 px-4 text-start whitespace-nowrap">{tr('partyName')}</th>
                   <th className="py-3 px-4 text-start whitespace-nowrap">{tr('partyType')}</th>
                   <th className="py-3 px-4 text-start whitespace-nowrap">{tr('contactStatus')}</th>
@@ -224,40 +224,40 @@ export function PartiesView() {
                   <th className="py-3 px-4 text-end whitespace-nowrap">{tr('actions')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 text-sm">
+              <tbody className="divide-y divide-line text-sm">
                 {filteredParties.map((party) => (
                   <tr
                     key={party.id}
                     onClick={() => {
                       if (can('entities:write')) openEditDrawer(party);
                     }}
-                    className={`h-11 hover:bg-slate-50 transition-colors duration-200 ${
+                    className={`h-11 hover:bg-surface transition-colors duration-200 ${
                       can('entities:write') ? 'cursor-pointer' : ''
                     }`}
                   >
-                    <td className="py-2.5 px-4 font-semibold text-[#1A2B4A] whitespace-nowrap">
+                    <td className="py-2.5 px-4 font-semibold text-ink whitespace-nowrap">
                       {party.name}
                     </td>
-                    <td className="py-2.5 px-4 text-[#1A2B4A]/80 whitespace-nowrap">
+                    <td className="py-2.5 px-4 text-ink/80 whitespace-nowrap">
                       {tr(`type${party.partyType}`)}
                     </td>
                     <td className="py-2.5 px-4 whitespace-nowrap">
                       <span
                         className={`text-xs font-semibold ${
                           party.contactStatus === 'ACTIVE'
-                            ? 'text-[#2ECC71]'
+                            ? 'text-success'
                             : party.contactStatus === 'PENDING'
-                            ? 'text-[#FF7A00]'
-                            : 'text-[#1A2B4A]/50'
+                            ? 'text-brand'
+                            : 'text-muted'
                         }`}
                       >
                         {tr(`status${party.contactStatus}`)}
                       </span>
                     </td>
-                    <td className="py-2.5 px-4 text-xs text-[#1A2B4A]/70 whitespace-nowrap">
+                    <td className="py-2.5 px-4 text-xs text-ink/70 whitespace-nowrap">
                       {party.email || '—'}
                     </td>
-                    <td className="py-2.5 px-4 text-xs font-mono-tabular text-[#1A2B4A]/70 whitespace-nowrap">
+                    <td className="py-2.5 px-4 text-xs font-mono-tabular text-ink/70 whitespace-nowrap">
                       {party.phone || '—'}
                     </td>
                     {partyFields.map((cf) => {
@@ -265,7 +265,7 @@ export function PartiesView() {
                       return (
                         <td
                           key={cf.id}
-                          className="py-2.5 px-4 text-xs text-[#1A2B4A]/80 whitespace-nowrap"
+                          className="py-2.5 px-4 text-xs text-ink/80 whitespace-nowrap"
                         >
                           {val === undefined || val === ''
                             ? '—'
@@ -284,7 +284,7 @@ export function PartiesView() {
                             <button
                               onClick={() => openEditDrawer(party)}
                               aria-label={tr('edit')}
-                              className="p-1.5 rounded-md text-[#1A2B4A]/70 hover:text-[#1A2B4A] hover:bg-slate-200/70 hover:scale-105 active:scale-95 transition-all duration-150"
+                              className="p-1.5 rounded-md text-ink/70 hover:text-ink hover:bg-line/70 transition-all duration-150"
                             >
                               <Pencil className="w-3.5 h-3.5" />
                             </button>
@@ -294,7 +294,7 @@ export function PartiesView() {
                           (confirmDeleteId === party.id ? (
                             <button
                               onClick={() => void handleDelete(party)}
-                              className="px-2 py-1 rounded bg-red-600 text-white text-xs font-semibold hover:scale-105 active:scale-95 transition-transform"
+                              className="px-2 py-1 rounded bg-red-600 text-white text-xs font-semibold transition-transform"
                             >
                               {tr('confirmDelete')}
                             </button>
@@ -303,7 +303,7 @@ export function PartiesView() {
                               <button
                                 onClick={() => setConfirmDeleteId(party.id)}
                                 aria-label={tr('delete')}
-                                className="p-1.5 rounded-md text-[#1A2B4A]/50 hover:text-red-600 hover:bg-red-50 hover:scale-105 active:scale-95 transition-all duration-150"
+                                className="p-1.5 rounded-md text-muted hover:text-red-600 hover:bg-red-50 transition-all duration-150"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
@@ -327,7 +327,7 @@ export function PartiesView() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.16 }}
-            className="fixed inset-0 z-50 bg-[#1A2B4A]/35 flex justify-end"
+            className="fixed inset-0 z-50 bg-ink/35 flex justify-end"
           >
             <div className="flex-1" onClick={() => setDrawerOpen(false)} />
             <motion.div
@@ -335,15 +335,15 @@ export function PartiesView() {
               animate={{ x: 0 }}
               exit={{ x: lang === 'ar' ? -420 : 420 }}
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full max-w-lg bg-white h-full border-s border-slate-200 flex flex-col"
+              className="w-full max-w-lg bg-canvas h-full border-s border-line flex flex-col"
             >
-              <div className="h-16 px-6 border-b border-slate-200 flex items-center justify-between shrink-0">
-                <h2 className="text-base font-bold text-[#1A2B4A]">
+              <div className="h-16 px-6 border-b border-line flex items-center justify-between shrink-0">
+                <h2 className="text-base font-bold text-ink">
                   {editingParty ? tr('editParty') : tr('addParty')}
                 </h2>
                 <button
                   onClick={() => setDrawerOpen(false)}
-                  className="p-2 rounded-lg text-[#1A2B4A]/60 hover:bg-[#F3F5F7]"
+                  className="p-2 rounded-xl text-muted hover:bg-surface"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -351,8 +351,8 @@ export function PartiesView() {
 
               <form onSubmit={(e) => void handleSubmit(e)} className="flex-1 overflow-y-auto p-6 space-y-5">
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-[#1A2B4A]">
-                    {tr('partyName')} <span className="text-[#FF7A00]">*</span>
+                  <label className="block text-xs font-medium text-ink">
+                    {tr('partyName')} <span className="text-brand">*</span>
                   </label>
                   <input
                     type="text"
@@ -361,19 +361,19 @@ export function PartiesView() {
                     maxLength={FIELD_LIMITS.NAME_MAX}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-slate-200 text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                    className="w-full h-10 px-3 rounded-xl border border-line text-sm text-ink focus:outline-none focus:border-ink"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-medium text-[#1A2B4A]">
+                    <label className="block text-xs font-medium text-ink">
                       {tr('partyType')}
                     </label>
                     <select
                       value={partyType}
                       onChange={(e) => setPartyType(e.target.value as PartyType)}
-                      className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                      className="w-full h-10 px-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
                     >
                       <option value="CLIENT">{tr('typeCLIENT')}</option>
                       <option value="SUPPLIER">{tr('typeSUPPLIER')}</option>
@@ -382,13 +382,13 @@ export function PartiesView() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-medium text-[#1A2B4A]">
+                    <label className="block text-xs font-medium text-ink">
                       {tr('contactStatus')}
                     </label>
                     <select
                       value={contactStatus}
                       onChange={(e) => setContactStatus(e.target.value as ContactStatus)}
-                      className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                      className="w-full h-10 px-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
                     >
                       <option value="ACTIVE">{tr('statusACTIVE')}</option>
                       <option value="PENDING">{tr('statusPENDING')}</option>
@@ -399,7 +399,7 @@ export function PartiesView() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-medium text-[#1A2B4A]">
+                    <label className="block text-xs font-medium text-ink">
                       {tr('email')}
                     </label>
                     <input
@@ -407,12 +407,12 @@ export function PartiesView() {
                       maxLength={FIELD_LIMITS.EMAIL_MAX}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full h-10 px-3 rounded-lg border border-slate-200 text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                      className="w-full h-10 px-3 rounded-xl border border-line text-sm text-ink focus:outline-none focus:border-ink"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-medium text-[#1A2B4A]">
+                    <label className="block text-xs font-medium text-ink">
                       {tr('phone')}
                     </label>
                     <input
@@ -420,7 +420,7 @@ export function PartiesView() {
                       maxLength={FIELD_LIMITS.PHONE_MAX}
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full h-10 px-3 rounded-lg border border-slate-200 text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                      className="w-full h-10 px-3 rounded-xl border border-line text-sm text-ink focus:outline-none focus:border-ink"
                     />
                   </div>
                 </div>
@@ -431,18 +431,18 @@ export function PartiesView() {
                   onChange={(k, v) => setCustomValues((prev) => ({ ...prev, [k]: v }))}
                 />
 
-                <div className="pt-6 border-t border-slate-200 flex items-center justify-end gap-3">
+                <div className="pt-6 border-t border-line flex items-center justify-end gap-3">
                   <button
                     type="button"
                     onClick={() => setDrawerOpen(false)}
-                    className="px-4 py-2 rounded-lg border border-slate-200 text-xs font-medium text-[#1A2B4A] hover:bg-[#F3F5F7]"
+                    className="px-4 py-2 rounded-xl border border-line text-xs font-medium text-ink hover:bg-surface"
                   >
                     {tr('cancel')}
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="px-5 py-2 rounded-lg bg-[#FF7A00] hover:bg-[#e56e00] disabled:opacity-60 text-white text-xs font-semibold"
+                    className="px-5 py-2 rounded-xl bg-brand hover:bg-brand-hover disabled:opacity-60 text-white text-xs font-semibold"
                   >
                     {tr('save')}
                   </button>

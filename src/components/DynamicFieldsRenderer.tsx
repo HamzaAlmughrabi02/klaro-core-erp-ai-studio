@@ -30,9 +30,9 @@ export function DynamicFieldsRenderer({
   if (fields.length === 0) return null;
 
   return (
-    <div className="pt-4 mt-4 border-t border-slate-200 space-y-4">
+    <div className="pt-4 mt-4 border-t border-line space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-xs font-semibold text-[#1A2B4A]/70 tracking-wide">
+        <h4 className="text-xs font-semibold text-ink/70 tracking-wide">
           {tr('customFieldsSection')}
         </h4>
       </div>
@@ -44,26 +44,26 @@ export function DynamicFieldsRenderer({
           const fieldError = errors[field.fieldKey];
           const borderClass = fieldError
             ? 'border-red-500 focus:border-red-600'
-            : 'border-slate-200 focus:border-[#1A2B4A]';
+            : 'border-line focus:border-ink';
 
           if (field.fieldType === 'BOOLEAN') {
             return (
               <div key={field.id} className="space-y-1">
                 <label
-                  className={`flex items-center justify-between px-3.5 h-10 rounded-lg border bg-[#F3F5F7]/70 cursor-pointer ${
-                    fieldError ? 'border-red-500' : 'border-slate-200'
+                  className={`flex items-center justify-between px-3.5 h-10 rounded-xl border bg-surface/70 cursor-pointer ${
+                    fieldError ? 'border-red-500' : 'border-line'
                   }`}
                 >
-                  <span className="text-sm font-medium text-[#1A2B4A]">
+                  <span className="text-sm font-medium text-ink">
                     {label}
-                    {field.isRequired && <span className="text-[#FF7A00] ms-1">*</span>}
+                    {field.isRequired && <span className="text-brand ms-1">*</span>}
                   </span>
                   <input
                     type="checkbox"
                     disabled={disabled}
                     checked={Boolean(currentVal)}
                     onChange={(e) => onChange(field.fieldKey, e.target.checked)}
-                    className="h-4 w-4 accent-[#1A2B4A] rounded border-slate-300"
+                    className="h-4 w-4 accent-ink rounded border-line-strong"
                   />
                 </label>
                 {fieldError && (
@@ -76,16 +76,16 @@ export function DynamicFieldsRenderer({
           if (field.fieldType === 'SELECT') {
             return (
               <div key={field.id} className="space-y-1.5">
-                <label className="block text-xs font-medium text-[#1A2B4A]">
+                <label className="block text-xs font-medium text-ink">
                   {label}
-                  {field.isRequired && <span className="text-[#FF7A00] ms-1">*</span>}
+                  {field.isRequired && <span className="text-brand ms-1">*</span>}
                 </label>
                 <select
                   disabled={disabled}
                   value={currentVal !== undefined ? String(currentVal) : ''}
                   onChange={(e) => onChange(field.fieldKey, e.target.value)}
                   aria-invalid={Boolean(fieldError)}
-                  className={`w-full h-10 px-3 rounded-lg border bg-white text-sm text-[#1A2B4A] focus:outline-none ${borderClass}`}
+                  className={`w-full h-10 px-3 rounded-xl border bg-canvas text-sm text-ink focus:outline-none ${borderClass}`}
                 >
                   <option value="">—</option>
                   {(field.options ?? []).map((opt) => (
@@ -103,9 +103,9 @@ export function DynamicFieldsRenderer({
 
           return (
             <div key={field.id} className="space-y-1.5">
-              <label className="block text-xs font-medium text-[#1A2B4A]">
+              <label className="block text-xs font-medium text-ink">
                 {label}
-                {field.isRequired && <span className="text-[#FF7A00] ms-1">*</span>}
+                {field.isRequired && <span className="text-brand ms-1">*</span>}
               </label>
               <input
                 type={
@@ -119,7 +119,7 @@ export function DynamicFieldsRenderer({
                 value={currentVal !== undefined ? String(currentVal) : ''}
                 onChange={(e) => onChange(field.fieldKey, e.target.value)}
                 aria-invalid={Boolean(fieldError)}
-                className={`w-full h-10 px-3 rounded-lg border bg-white text-sm text-[#1A2B4A] focus:outline-none ${borderClass}`}
+                className={`w-full h-10 px-3 rounded-xl border bg-canvas text-sm text-ink focus:outline-none ${borderClass}`}
               />
               {fieldError && (
                 <p className="text-xs text-red-600 font-medium">{fieldError}</p>

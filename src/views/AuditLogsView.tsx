@@ -137,17 +137,17 @@ export function AuditLogsView() {
     >
       <div className="space-y-1">
         <div className="flex items-center gap-2.5">
-          <History className="w-5 h-5 text-[#1A2B4A]" />
-          <h1 className="text-2xl font-bold tracking-tight text-[#1A2B4A]">
+          <History className="w-5 h-5 text-ink" />
+          <h1 className="text-2xl font-bold tracking-tight text-ink">
             {tr('auditLogsTitle')}
           </h1>
         </div>
-        <p className="text-sm text-[#1A2B4A]/65">{tr('auditLogsSubtitle')}</p>
+        <p className="text-sm text-muted">{tr('auditLogsSubtitle')}</p>
       </div>
 
       {/* Filter & Search Bar */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-        <div className="inline-flex flex-wrap items-center gap-1 p-1 rounded-lg bg-[#F3F5F7] border border-slate-200 self-start">
+        <div className="inline-flex flex-wrap items-center gap-1 p-1 rounded-xl bg-surface border border-line self-start">
           {(
             [
               'ALL',
@@ -168,8 +168,8 @@ export function AuditLogsView() {
                 onClick={() => setEntityFilter(ent)}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
                   active
-                    ? 'bg-white text-[#1A2B4A] border border-slate-200/80 shadow-sm'
-                    : 'text-[#1A2B4A]/65 hover:text-[#1A2B4A]'
+                    ? 'bg-canvas text-ink border border-line/80 shadow-[var(--shadow-card)]'
+                    : 'text-muted hover:text-ink'
                 }`}
               >
                 {label}
@@ -179,19 +179,19 @@ export function AuditLogsView() {
         </div>
 
         <div className="relative w-full lg:w-72">
-          <Search className="w-4 h-4 text-[#1A2B4A]/45 absolute top-1/2 -translate-y-1/2 start-3" />
+          <Search className="w-4 h-4 text-muted absolute top-1/2 -translate-y-1/2 start-3" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={tr('searchPlaceholder')}
-            className="w-full h-10 ps-9 pe-3 rounded-lg border border-slate-200 bg-white text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+            className="w-full h-10 ps-9 pe-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
           />
         </div>
       </div>
 
       {/* Audit History Table: User, Action, Entity Type, Timestamp, View Details */}
-      <div className="rounded-xl shadow-sm border border-slate-200 bg-white overflow-hidden">
+      <div className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
         {filteredLogs.length === 0 ? (
           <EmptyState
             variant="audit"
@@ -202,7 +202,7 @@ export function AuditLogsView() {
           <div className="overflow-x-auto">
             <table className="w-full text-start border-collapse">
               <thead>
-                <tr className="bg-[#F3F5F7] border-b border-slate-200 text-xs font-semibold text-[#1A2B4A]/70">
+                <tr className="bg-canvas border-b border-line text-xs font-semibold text-ink/70">
                   <th className="py-3 px-4 text-start whitespace-nowrap">{tr('auditTimestamp')}</th>
                   <th className="py-3 px-4 text-start whitespace-nowrap">{tr('auditActor')}</th>
                   <th className="py-3 px-4 text-start whitespace-nowrap">{tr('auditAction')}</th>
@@ -210,7 +210,7 @@ export function AuditLogsView() {
                   <th className="py-3 px-4 text-end whitespace-nowrap">{tr('actions')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 text-sm">
+              <tbody className="divide-y divide-line text-sm">
                 {filteredLogs.map((log) => {
                   const actionCode = formatActionCode(log);
                   const isApproved = log.toStatus === 'APPROVED';
@@ -227,33 +227,33 @@ export function AuditLogsView() {
                         setCopied(false);
                         setSelectedLog(log);
                       }}
-                      className="h-12 hover:bg-slate-50 transition-colors duration-200 cursor-pointer"
+                      className="h-12 hover:bg-surface transition-colors duration-200 cursor-pointer"
                     >
-                      <td className="py-2.5 px-4 font-mono-tabular text-xs text-[#1A2B4A]/65 whitespace-nowrap">
+                      <td className="py-2.5 px-4 font-mono-tabular text-xs text-muted whitespace-nowrap">
                         {log.createdAt.toLocaleString()}
                       </td>
-                      <td className="py-2.5 px-4 font-semibold text-[#1A2B4A] whitespace-nowrap">
+                      <td className="py-2.5 px-4 font-semibold text-ink whitespace-nowrap">
                         {log.actorName}
                       </td>
                       <td className="py-2.5 px-4 whitespace-nowrap">
                         <span
                           className={`font-mono-tabular text-xs font-semibold ${
                             isApproved
-                              ? 'text-[#2ECC71]'
+                              ? 'text-success'
                               : isRejectedOrDeleted
                               ? 'text-red-600'
                               : isCreated
-                              ? 'text-[#1A2B4A]'
-                              : 'text-[#FF7A00]'
+                              ? 'text-ink'
+                              : 'text-brand'
                           }`}
                         >
                           {actionCode}
                         </span>
-                        <span className="text-xs text-[#1A2B4A]/55 ms-2">
+                        <span className="text-xs text-muted ms-2">
                           ({log.entityLabel})
                         </span>
                       </td>
-                      <td className="py-2.5 px-4 text-xs font-medium text-[#1A2B4A]/80 whitespace-nowrap">
+                      <td className="py-2.5 px-4 text-xs font-medium text-ink/80 whitespace-nowrap">
                         {formatEntityLabel(log.entityType, tr)}
                       </td>
                       <td className="py-2.5 px-4 text-end whitespace-nowrap">
@@ -265,9 +265,9 @@ export function AuditLogsView() {
                               setCopied(false);
                               setSelectedLog(log);
                             }}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-[#F3F5F7] hover:scale-105 active:scale-95 text-xs font-semibold text-[#1A2B4A] transition-all duration-150"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-line bg-canvas hover:bg-surface text-xs font-semibold text-ink transition-all duration-150"
                           >
-                            <Eye className="w-3.5 h-3.5 text-[#1A2B4A]/70" />
+                            <Eye className="w-3.5 h-3.5 text-ink/70" />
                             <span>{tr('viewDetails')}</span>
                           </button>
                         </ActionTooltip>
@@ -289,7 +289,7 @@ export function AuditLogsView() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.16 }}
-            className="fixed inset-0 z-50 bg-[#1A2B4A]/40 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-ink/40 flex items-center justify-center p-4"
             onClick={() => setSelectedLog(null)}
           >
             <motion.div
@@ -298,12 +298,12 @@ export function AuditLogsView() {
               exit={{ opacity: 0, scale: 0.97, y: 8 }}
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-2xl bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"
+              className="w-full max-w-2xl bg-canvas rounded-2xl shadow-[var(--shadow-card)] border border-line overflow-hidden"
             >
-              <div className="h-14 px-6 bg-[#F3F5F7] border-b border-slate-200 flex items-center justify-between gap-4">
+              <div className="h-14 px-6 bg-surface border-b border-line flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2 min-w-0">
-                  <History className="w-4 h-4 text-[#1A2B4A] shrink-0" />
-                  <h2 className="text-sm font-bold text-[#1A2B4A] truncate">
+                  <History className="w-4 h-4 text-ink shrink-0" />
+                  <h2 className="text-sm font-bold text-ink truncate">
                     {tr('auditPayloadModalTitle')}
                   </h2>
                 </div>
@@ -311,10 +311,10 @@ export function AuditLogsView() {
                   <button
                     type="button"
                     onClick={() => void handleCopyJson()}
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-medium text-[#1A2B4A]"
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-line bg-canvas hover:bg-surface text-xs font-medium text-ink"
                   >
                     {copied ? (
-                      <Check className="w-3.5 h-3.5 text-[#2ECC71]" />
+                      <Check className="w-3.5 h-3.5 text-success" />
                     ) : (
                       <Copy className="w-3.5 h-3.5" />
                     )}
@@ -324,7 +324,7 @@ export function AuditLogsView() {
                     type="button"
                     onClick={() => setSelectedLog(null)}
                     aria-label={tr('close')}
-                    className="p-1.5 rounded-lg text-[#1A2B4A]/60 hover:bg-white"
+                    className="p-1.5 rounded-xl text-muted hover:bg-canvas"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -332,20 +332,20 @@ export function AuditLogsView() {
               </div>
 
               <div className="p-6 space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-xl bg-[#F3F5F7] border border-slate-200 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 rounded-2xl bg-surface border border-line text-xs">
                   <div>
-                    <p className="text-[#1A2B4A]/55">{tr('auditActor')}</p>
-                    <p className="font-semibold text-[#1A2B4A] mt-0.5">{selectedLog.actorName}</p>
+                    <p className="text-muted">{tr('auditActor')}</p>
+                    <p className="font-semibold text-ink mt-0.5">{selectedLog.actorName}</p>
                   </div>
                   <div>
-                    <p className="text-[#1A2B4A]/55">{tr('auditAction')}</p>
-                    <p className="font-mono-tabular font-semibold text-[#1A2B4A] mt-0.5">
+                    <p className="text-muted">{tr('auditAction')}</p>
+                    <p className="font-mono-tabular font-semibold text-ink mt-0.5">
                       {formatActionCode(selectedLog)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-[#1A2B4A]/55">{tr('auditTimestamp')}</p>
-                    <p className="font-mono-tabular text-[#1A2B4A] mt-0.5">
+                    <p className="text-muted">{tr('auditTimestamp')}</p>
+                    <p className="font-mono-tabular text-ink mt-0.5">
                       {selectedLog.createdAt.toLocaleString()}
                     </p>
                   </div>
@@ -353,7 +353,7 @@ export function AuditLogsView() {
 
                 <pre
                   dir="ltr"
-                  className="p-4 rounded-xl border border-slate-200 bg-[#F3F5F7]/60 text-xs font-mono-tabular text-[#1A2B4A] overflow-x-auto max-h-96 leading-relaxed"
+                  className="p-4 rounded-2xl border border-line bg-surface/60 text-xs font-mono-tabular text-ink overflow-x-auto max-h-96 leading-relaxed"
                 >
                   {selectedPayloadJson}
                 </pre>

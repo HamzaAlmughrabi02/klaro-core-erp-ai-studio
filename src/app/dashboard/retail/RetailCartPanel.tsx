@@ -99,16 +99,16 @@ export function RetailCartPanel({
   }, [parties]);
 
   return (
-    <aside className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden flex flex-col">
+    <aside className="rounded-2xl border border-line bg-canvas shadow-[var(--shadow-card)] overflow-hidden flex flex-col">
       {/* Cart Header */}
-      <div className="px-5 py-4 bg-[#1A2B4A] text-white flex items-center justify-between gap-3">
+      <div className="px-5 py-4 bg-night text-white flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
-          <ShoppingCart className="w-4 h-4 text-[#FF7A00] shrink-0" />
+          <ShoppingCart className="w-4 h-4 text-brand shrink-0" />
           <div className="min-w-0">
             <h2 className="text-sm font-bold truncate">
               {lang === 'ar' ? 'سلة نقطة البيع' : 'Active Sale Cart'}
             </h2>
-            <p className="text-[11px] text-white/70 tabular-nums">
+            <p className="text-xs text-white/70 tabular-nums">
               {cart.length} {lang === 'ar' ? 'أصناف' : 'lines'} · {totalUnits}{' '}
               {lang === 'ar' ? 'وحدة' : 'units'}
             </p>
@@ -134,22 +134,22 @@ export function RetailCartPanel({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="p-5 bg-[#2ECC71]/10 border-b border-[#2ECC71]/30 space-y-3"
+            className="p-5 bg-success/10 border-b border-success/30 space-y-3"
           >
             <div className="flex items-start gap-2.5">
-              <CheckCircle2 className="w-5 h-5 text-[#2ECC71] shrink-0 mt-0.5" />
+              <CheckCircle2 className="w-5 h-5 text-success shrink-0 mt-0.5" />
               <div className="min-w-0 flex-1 space-y-1">
-                <p className="text-sm font-bold text-[#1A2B4A]">
+                <p className="text-sm font-bold text-ink">
                   {lang === 'ar'
                     ? 'تم إصدار مستند الفاتورة بنجاح'
                     : 'Invoice Document Created'}
                 </p>
-                <p className="text-xs text-[#1A2B4A]/75">
+                <p className="text-xs text-ink/75">
                   <span className="font-mono-tabular font-semibold">{receipt.docNumber}</span>
                   <span aria-hidden="true" className="mx-1.5">·</span>
                   <span>{receipt.partyName}</span>
                 </p>
-                <p className="font-mono-tabular text-sm font-extrabold text-[#1A2B4A] tabular-nums">
+                <p className="font-mono-tabular text-sm font-extrabold text-ink tabular-nums">
                   {formatCurrencyAmount(receipt.totalAmount, receipt.currency)}
                 </p>
               </div>
@@ -160,7 +160,7 @@ export function RetailCartPanel({
                 <button
                   type="button"
                   onClick={onOpenDocuments}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1A2B4A] hover:bg-[#14223b] text-white text-xs font-semibold transition-all duration-150 hover:scale-105 active:scale-95"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-semibold transition-all duration-150"
                 >
                   <FileText className="w-3.5 h-3.5" />
                   <span>{lang === 'ar' ? 'عرض الفاتورة' : 'Open Documents'}</span>
@@ -169,7 +169,7 @@ export function RetailCartPanel({
               <button
                 type="button"
                 onClick={onDismissReceipt}
-                className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-[#1A2B4A]"
+                className="px-3 py-1.5 rounded-xl border border-line bg-canvas hover:bg-surface text-xs font-semibold text-ink"
               >
                 {lang === 'ar' ? 'إغلاق' : 'Dismiss'}
               </button>
@@ -179,16 +179,16 @@ export function RetailCartPanel({
       </AnimatePresence>
 
       {/* Customer / Party Selector */}
-      <div className="p-4 border-b border-slate-200 bg-[#F3F5F7]/60 space-y-1.5">
-        <label className="flex items-center gap-1.5 text-xs font-semibold text-[#1A2B4A]">
-          <UserCheck className="w-3.5 h-3.5 text-[#1A2B4A]/70" />
+      <div className="p-4 border-b border-line bg-surface/60 space-y-1.5">
+        <label className="flex items-center gap-1.5 text-xs font-semibold text-ink">
+          <UserCheck className="w-3.5 h-3.5 text-ink/70" />
           <span>{lang === 'ar' ? 'العميل (الطرف)' : 'Customer (Party)'}</span>
-          <span className="text-[#FF7A00]">*</span>
+          <span className="text-brand">*</span>
         </label>
         <select
           value={selectedPartyId}
           onChange={(e) => onSelectParty(e.target.value)}
-          className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+          className="w-full h-10 px-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
         >
           <option value="">
             {lang === 'ar' ? 'اختر العميل...' : 'Select a Customer Party...'}
@@ -205,11 +205,11 @@ export function RetailCartPanel({
       <div className="p-4 max-h-[380px] overflow-y-auto space-y-2.5">
         {cart.length === 0 ? (
           <div className="py-10 text-center space-y-2">
-            <ShoppingCart className="w-8 h-8 text-slate-300 mx-auto" />
-            <p className="text-sm font-semibold text-[#1A2B4A]">
+            <ShoppingCart className="w-8 h-8 text-line-strong mx-auto" />
+            <p className="text-sm font-semibold text-ink">
               {lang === 'ar' ? 'السلة فارغة حالياً' : 'Your cart is empty'}
             </p>
-            <p className="text-xs text-[#1A2B4A]/60 max-w-xs mx-auto">
+            <p className="text-xs text-muted max-w-xs mx-auto">
               {lang === 'ar'
                 ? 'اضغط على أي منتج من الشبكة لإضافته إلى فاتورة البيع.'
                 : 'Select any product card on the left to add it to this POS invoice.'}
@@ -227,14 +227,14 @@ export function RetailCartPanel({
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   exit={{ opacity: 0, x: lang === 'ar' ? 18 : -18, scale: 0.96 }}
                   transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                  className="rounded-lg border border-slate-200 bg-[#F3F5F7]/45 p-3 space-y-2.5"
+                  className="rounded-xl border border-line bg-surface/45 p-3 space-y-2.5"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="text-sm font-bold text-[#1A2B4A] truncate">
+                      <p className="text-sm font-bold text-ink truncate">
                         {line.item.name}
                       </p>
-                      <p className="font-mono-tabular text-[11px] text-[#1A2B4A]/60">
+                      <p className="font-mono-tabular text-xs text-muted">
                         {line.item.code} · {line.item.unit}
                       </p>
                     </div>
@@ -244,7 +244,7 @@ export function RetailCartPanel({
                         type="button"
                         onClick={() => onRemoveItem(line.item.id)}
                         aria-label="Remove cart item"
-                        className="p-1 rounded text-[#1A2B4A]/45 hover:text-red-600 hover:bg-red-50 transition-colors shrink-0"
+                        className="p-1 rounded text-muted hover:text-red-600 hover:bg-red-50 transition-colors shrink-0"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -254,7 +254,7 @@ export function RetailCartPanel({
                   <div className="flex items-center justify-between gap-2">
                     {/* Unit Price Field (editable for items without pre-filled price) */}
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[11px] text-[#1A2B4A]/55">
+                      <span className="text-xs text-muted">
                         {lang === 'ar' ? 'السعر' : 'Price'}
                       </span>
                       <input
@@ -266,28 +266,28 @@ export function RetailCartPanel({
                           onUpdateUnitPrice(line.item.id, Math.max(0, Number(e.target.value) || 0))
                         }
                         aria-label={`Unit price for ${line.item.name}`}
-                        className="w-20 h-8 px-2 rounded-md border border-slate-200 bg-white font-mono-tabular text-xs font-semibold text-[#1A2B4A] tabular-nums focus:outline-none focus:border-[#1A2B4A]"
+                        className="w-20 h-8 px-2 rounded-md border border-line bg-canvas font-mono-tabular text-xs font-semibold text-ink tabular-nums focus:outline-none focus:border-ink"
                       />
                     </div>
 
                     {/* Quantity Stepper */}
-                    <div className="inline-flex items-center rounded-lg border border-slate-200 bg-white overflow-hidden">
+                    <div className="inline-flex items-center rounded-xl border border-line bg-canvas overflow-hidden">
                       <button
                         type="button"
                         onClick={() => onUpdateQuantity(line.item.id, -1)}
                         aria-label="Decrease quantity"
-                        className="w-8 h-8 flex items-center justify-center text-[#1A2B4A] hover:bg-[#F3F5F7] transition-colors"
+                        className="w-8 h-8 flex items-center justify-center text-ink hover:bg-surface transition-colors"
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </button>
-                      <span className="w-8 text-center font-mono-tabular text-xs font-bold text-[#1A2B4A] tabular-nums">
+                      <span className="w-8 text-center font-mono-tabular text-xs font-bold text-ink tabular-nums">
                         {line.quantity}
                       </span>
                       <button
                         type="button"
                         onClick={() => onUpdateQuantity(line.item.id, 1)}
                         aria-label="Increase quantity"
-                        className="w-8 h-8 flex items-center justify-center text-[#1A2B4A] hover:bg-[#F3F5F7] transition-colors"
+                        className="w-8 h-8 flex items-center justify-center text-ink hover:bg-surface transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
@@ -295,7 +295,7 @@ export function RetailCartPanel({
 
                     {/* Line Subtotal */}
                     <div className="text-end min-w-[74px]">
-                      <span className="font-mono-tabular text-xs font-extrabold text-[#1A2B4A] tabular-nums">
+                      <span className="font-mono-tabular text-xs font-extrabold text-ink tabular-nums">
                         {formatCurrencyAmount(lineTotal, currency)}
                       </span>
                     </div>
@@ -308,11 +308,11 @@ export function RetailCartPanel({
       </div>
 
       {/* Collapsible Invoice Custom Fields & POS Note */}
-      <div className="border-t border-slate-200 px-4 py-3 space-y-3">
+      <div className="border-t border-line px-4 py-3 space-y-3">
         <button
           type="button"
           onClick={() => setShowDocMeta((prev) => !prev)}
-          className="w-full flex items-center justify-between text-xs font-semibold text-[#1A2B4A]/75 hover:text-[#1A2B4A]"
+          className="w-full flex items-center justify-between text-xs font-semibold text-ink/75 hover:text-ink"
         >
           <span>
             {lang === 'ar'
@@ -333,7 +333,7 @@ export function RetailCartPanel({
               />
             )}
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-[#1A2B4A]">
+              <label className="block text-xs font-medium text-ink">
                 {lang === 'ar' ? 'ملاحظات نقطة البيع' : 'POS Receipt Notes'}
               </label>
               <input
@@ -345,7 +345,7 @@ export function RetailCartPanel({
                     ? 'اختياري: رقم الصندوق أو المرجع...'
                     : 'Optional: Register # or payment ref...'
                 }
-                className="w-full h-9 px-3 rounded-lg border border-slate-200 bg-white text-xs text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                className="w-full h-9 px-3 rounded-xl border border-line bg-canvas text-xs text-ink focus:outline-none focus:border-ink"
               />
             </div>
           </div>
@@ -353,25 +353,25 @@ export function RetailCartPanel({
       </div>
 
       {/* Checkout Totals & Primary CTA */}
-      <div className="p-4 bg-[#F3F5F7] border-t border-slate-200 space-y-4">
+      <div className="p-4 bg-surface border-t border-line space-y-4">
         <div className="space-y-1.5 text-xs">
-          <div className="flex items-center justify-between text-[#1A2B4A]/70">
+          <div className="flex items-center justify-between text-ink/70">
             <span>{lang === 'ar' ? 'نوع المستند الصادر' : 'Target Document Type'}</span>
-            <span className="font-mono-tabular font-semibold text-[#1A2B4A]">
+            <span className="font-mono-tabular font-semibold text-ink">
               INVOICE (DRAFT_INVOICE)
             </span>
           </div>
-          <div className="flex items-center justify-between text-[#1A2B4A]/70">
+          <div className="flex items-center justify-between text-ink/70">
             <span>{lang === 'ar' ? 'إجمالي الوحدات' : 'Total Units'}</span>
-            <span className="font-mono-tabular font-semibold text-[#1A2B4A] tabular-nums">
+            <span className="font-mono-tabular font-semibold text-ink tabular-nums">
               {totalUnits}
             </span>
           </div>
-          <div className="pt-2 border-t border-slate-200/80 flex items-center justify-between">
-            <span className="text-sm font-bold text-[#1A2B4A]">
+          <div className="pt-2 border-t border-line/80 flex items-center justify-between">
+            <span className="text-sm font-bold text-ink">
               {lang === 'ar' ? 'الإجمالي المستحق' : 'Checkout Total'}
             </span>
-            <span className="font-mono-tabular text-xl font-extrabold text-[#1A2B4A] tabular-nums">
+            <span className="font-mono-tabular text-xl font-extrabold text-ink tabular-nums">
               {formatCurrencyAmount(subtotal, currency)}
             </span>
           </div>
@@ -381,7 +381,7 @@ export function RetailCartPanel({
           type="button"
           disabled={!canCreateDocument || cart.length === 0 || !selectedPartyId || checkingOut}
           onClick={() => void onCheckout()}
-          className="w-full h-11 rounded-lg bg-[#FF7A00] hover:bg-[#e56e00] disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold inline-flex items-center justify-center gap-2 transition-all duration-150 hover:scale-[1.01] active:scale-[0.99] hover:brightness-105 shadow-sm"
+          className="w-full h-11 rounded-xl bg-brand hover:bg-brand-hover disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold inline-flex items-center justify-center gap-2 transition-all duration-150 hover:scale-[1.01] active:scale-[0.99] hover:brightness-105 shadow-[var(--shadow-card)]"
         >
           <CreditCard className="w-4 h-4" />
           <span>
@@ -396,7 +396,7 @@ export function RetailCartPanel({
         </button>
 
         {!canCreateDocument && (
-          <p className="text-[11px] text-red-700 font-medium text-center">
+          <p className="text-xs text-red-700 font-medium text-center">
             {lang === 'ar'
               ? 'حسابك لا يملك صلاحية documents:create لإصدار الفواتير.'
               : 'Your account lacks documents:create permission to issue invoices.'}

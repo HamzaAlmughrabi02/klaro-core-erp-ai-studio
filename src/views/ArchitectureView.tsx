@@ -133,19 +133,19 @@ export function ArchitectureView() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <Layers className="w-5 h-5 text-[#1A2B4A]" />
-            <h1 className="text-2xl font-extrabold tracking-tight text-[#1A2B4A]">
+            <Layers className="w-5 h-5 text-ink" />
+            <h1 className="text-2xl font-extrabold tracking-tight text-ink">
               {tr('archTitle')}
             </h1>
             <InfoTooltip text={tr('blueprintTooltip')} />
           </div>
-          <p className="text-sm text-[#1A2B4A]/65">{tr('archSubtitle')}</p>
+          <p className="text-sm text-muted">{tr('archSubtitle')}</p>
         </div>
 
         <button
           type="button"
           onClick={() => setActiveModule('config')}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#FF7A00] hover:bg-[#e56e00] text-white text-xs font-semibold transition-all duration-150 hover:scale-105 active:scale-95 hover:brightness-105 whitespace-nowrap shrink-0 self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-semibold transition-all duration-150 hover:brightness-105 whitespace-nowrap shrink-0 self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           <span>{tr('openSchemaBuilder')}</span>
@@ -155,8 +155,8 @@ export function ArchitectureView() {
       {/* Section 1: Active Engines (Config, Workflow, Audit, RBAC) */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
-          <Cpu className="w-4 h-4 text-[#1A2B4A]" />
-          <h2 className="text-sm font-bold text-[#1A2B4A]">{tr('activeEnginesTitle')}</h2>
+          <Cpu className="w-4 h-4 text-ink" />
+          <h2 className="text-sm font-bold text-ink">{tr('activeEnginesTitle')}</h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -167,18 +167,18 @@ export function ArchitectureView() {
                 key={eng.id}
                 type="button"
                 onClick={eng.onClick}
-                className="text-start p-5 rounded-xl shadow-sm bg-[#F3F5F7] border border-slate-200 hover:shadow-md hover:-translate-y-1 hover:border-[#1A2B4A]/45 transition-all duration-200 cursor-pointer space-y-2.5"
+                className="text-start p-5 rounded-2xl shadow-[var(--shadow-card)] bg-surface border border-line hover:shadow-[var(--shadow-lift)] hover:border-ink/45 transition-all duration-200 cursor-pointer space-y-2.5"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <Icon className="w-4 h-4 text-[#FF7A00] shrink-0" />
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#2ECC71]">
+                  <Icon className="w-4 h-4 text-brand shrink-0" />
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-success">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     <span>{tr('engineStatusActive')}</span>
                   </span>
                 </div>
-                <p className="text-sm font-bold text-[#1A2B4A]">{eng.title}</p>
-                <p className="text-xs text-[#1A2B4A]/65 leading-relaxed">{eng.detail}</p>
-                <p className="text-xs font-semibold text-[#1A2B4A] tabular-nums pt-1 border-t border-slate-200/80">
+                <p className="text-sm font-bold text-ink">{eng.title}</p>
+                <p className="text-xs text-muted leading-relaxed">{eng.detail}</p>
+                <p className="text-xs font-semibold text-ink tabular-nums pt-1 border-t border-line/80">
                   {eng.metric}
                 </p>
               </button>
@@ -188,66 +188,66 @@ export function ArchitectureView() {
       </section>
 
       {/* Section 2: Schema Summary (Total counts of Parties, Items, Documents, Custom Fields) */}
-      <section className="rounded-xl shadow-sm border border-slate-200 bg-white overflow-hidden">
-        <div className="px-6 py-4 bg-[#1A2B4A] text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <section className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+        <div className="px-6 py-4 bg-night text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Database className="w-4 h-4 text-[#FF7A00]" />
+            <Database className="w-4 h-4 text-brand" />
             <h2 className="text-sm font-bold">{tr('schemaSummaryTitle')}</h2>
           </div>
           <p className="text-xs font-medium text-white/85 tabular-nums">{schemaSummaryLine}</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x rtl:sm:divide-x-reverse divide-slate-200">
-          <div className="p-5 space-y-1.5 hover:bg-slate-50 transition-colors">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x rtl:sm:divide-x-reverse divide-line">
+          <div className="p-5 space-y-1.5 hover:bg-surface transition-colors">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-[#1A2B4A]/65">{tr('navParties')}</span>
-              <span className="text-xs font-semibold text-[#2ECC71] tabular-nums">
+              <span className="text-xs font-semibold text-muted">{tr('navParties')}</span>
+              <span className="text-xs font-semibold text-success tabular-nums">
                 {partyFieldCount} {lang === 'ar' ? 'حقول' : 'fields'}
               </span>
             </div>
-            <p className="text-2xl font-bold text-[#1A2B4A] tabular-nums">{parties.length}</p>
-            <p className="text-xs text-[#1A2B4A]/60">
+            <p className="text-2xl font-bold text-ink tabular-nums">{parties.length}</p>
+            <p className="text-xs text-muted">
               {lang === 'ar' ? 'المجموعة: parties' : 'Collection: parties'}
             </p>
           </div>
 
-          <div className="p-5 space-y-1.5 hover:bg-slate-50 transition-colors">
+          <div className="p-5 space-y-1.5 hover:bg-surface transition-colors">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-[#1A2B4A]/65">{tr('navItems')}</span>
-              <span className="text-xs font-semibold text-[#2ECC71] tabular-nums">
+              <span className="text-xs font-semibold text-muted">{tr('navItems')}</span>
+              <span className="text-xs font-semibold text-success tabular-nums">
                 {itemFieldCount} {lang === 'ar' ? 'حقول' : 'fields'}
               </span>
             </div>
-            <p className="text-2xl font-bold text-[#1A2B4A] tabular-nums">{items.length}</p>
-            <p className="text-xs text-[#1A2B4A]/60">
+            <p className="text-2xl font-bold text-ink tabular-nums">{items.length}</p>
+            <p className="text-xs text-muted">
               {lang === 'ar' ? 'المجموعة: items' : 'Collection: items'}
             </p>
           </div>
 
-          <div className="p-5 space-y-1.5 hover:bg-slate-50 transition-colors">
+          <div className="p-5 space-y-1.5 hover:bg-surface transition-colors">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-[#1A2B4A]/65">{tr('navDocuments')}</span>
-              <span className="text-xs font-semibold text-[#2ECC71] tabular-nums">
+              <span className="text-xs font-semibold text-muted">{tr('navDocuments')}</span>
+              <span className="text-xs font-semibold text-success tabular-nums">
                 {docFieldCount} {lang === 'ar' ? 'حقول' : 'fields'}
               </span>
             </div>
-            <p className="text-2xl font-bold text-[#1A2B4A] tabular-nums">{documents.length}</p>
-            <p className="text-xs text-[#1A2B4A]/60">
+            <p className="text-2xl font-bold text-ink tabular-nums">{documents.length}</p>
+            <p className="text-xs text-muted">
               {lang === 'ar' ? 'المجموعة: documents' : 'Collection: documents'}
             </p>
           </div>
 
-          <div className="p-5 space-y-1.5 hover:bg-slate-50 transition-colors">
+          <div className="p-5 space-y-1.5 hover:bg-surface transition-colors">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-[#1A2B4A]/65">
+              <span className="text-xs font-semibold text-muted">
                 {tr('customFieldsSection')}
               </span>
-              <span className="text-xs font-semibold text-[#FF7A00] tabular-nums">
+              <span className="text-xs font-semibold text-brand tabular-nums">
                 {activeFieldsCount} {tr('fieldStatusActive')}
               </span>
             </div>
-            <p className="text-2xl font-bold text-[#1A2B4A] tabular-nums">{customFields.length}</p>
-            <p className="text-xs text-[#1A2B4A]/60">
+            <p className="text-2xl font-bold text-ink tabular-nums">{customFields.length}</p>
+            <p className="text-xs text-muted">
               {lang === 'ar' ? 'المجموعة: customFieldDefinitions' : 'Collection: customFieldDefinitions'}
             </p>
           </div>
@@ -255,15 +255,15 @@ export function ArchitectureView() {
       </section>
 
       {/* Live Dynamic Schema Registry */}
-      <section className="rounded-xl shadow-sm border border-slate-200 bg-white overflow-hidden">
-        <div className="px-6 py-4 bg-[#F3F5F7] border-b border-slate-200 flex items-center justify-between gap-4">
+      <section className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+        <div className="px-6 py-4 bg-surface border-b border-line flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Database className="w-4 h-4 text-[#1A2B4A]" />
-            <h2 className="text-sm font-bold text-[#1A2B4A]">
+            <Database className="w-4 h-4 text-ink" />
+            <h2 className="text-sm font-bold text-ink">
               {tr('dynamicFieldsInventory')}
             </h2>
           </div>
-          <span className="text-xs font-semibold text-[#1A2B4A]/65 tabular-nums">
+          <span className="text-xs font-semibold text-muted tabular-nums">
             {activeFieldsCount} {tr('fieldStatusActive')} · {customFields.length} {tr('all')}
           </span>
         </div>
@@ -280,7 +280,7 @@ export function ArchitectureView() {
           <div className="overflow-x-auto">
             <table className="w-full text-start border-collapse">
               <thead>
-                <tr className="bg-[#F3F5F7]/70 border-b border-slate-200 text-xs font-semibold text-[#1A2B4A]/70">
+                <tr className="bg-surface/70 border-b border-line text-xs font-semibold text-ink/70">
                   <th className="py-3 px-4 text-start whitespace-nowrap">{tr('targetEntity')}</th>
                   <th className="py-3 px-4 text-start whitespace-nowrap">{tr('fieldName')}</th>
                   <th className="py-3 px-4 text-start whitespace-nowrap">{tr('fieldKey')}</th>
@@ -289,25 +289,25 @@ export function ArchitectureView() {
                   <th className="py-3 px-4 text-end whitespace-nowrap">{tr('fieldStatus')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200 text-sm">
+              <tbody className="divide-y divide-line text-sm">
                 {customFields.map((cf) => (
-                  <tr key={cf.id} className="h-11 hover:bg-slate-50 transition-colors">
-                    <td className="py-2.5 px-4 text-xs font-semibold text-[#1A2B4A] whitespace-nowrap">
+                  <tr key={cf.id} className="h-11 hover:bg-surface transition-colors">
+                    <td className="py-2.5 px-4 text-xs font-semibold text-ink whitespace-nowrap">
                       {tr(`entity${cf.entityType}`)}
                     </td>
-                    <td className="py-2.5 px-4 font-semibold text-[#1A2B4A] whitespace-nowrap">
+                    <td className="py-2.5 px-4 font-semibold text-ink whitespace-nowrap">
                       {getFieldLabel(cf, lang)}
                     </td>
-                    <td className="py-2.5 px-4 font-mono-tabular text-xs text-[#1A2B4A]/65 whitespace-nowrap">
+                    <td className="py-2.5 px-4 font-mono-tabular text-xs text-muted whitespace-nowrap">
                       {cf.fieldKey}
                     </td>
-                    <td className="py-2.5 px-4 text-xs text-[#1A2B4A]/80 whitespace-nowrap">
+                    <td className="py-2.5 px-4 text-xs text-ink/80 whitespace-nowrap">
                       {tr(`field${cf.fieldType}`)}
                     </td>
                     <td className="py-2.5 px-4 text-xs whitespace-nowrap">
                       <span
                         className={
-                          cf.isRequired ? 'text-[#FF7A00] font-semibold' : 'text-[#1A2B4A]/55'
+                          cf.isRequired ? 'text-brand font-semibold' : 'text-muted'
                         }
                       >
                         {cf.isRequired ? tr('required') : tr('optional')}
@@ -316,7 +316,7 @@ export function ArchitectureView() {
                     <td className="py-2.5 px-4 text-end text-xs whitespace-nowrap">
                       <span
                         className={`inline-flex items-center gap-1 font-semibold ${
-                          cf.isActive ? 'text-[#2ECC71]' : 'text-[#1A2B4A]/45'
+                          cf.isActive ? 'text-success' : 'text-muted'
                         }`}
                       >
                         {cf.isActive && <CheckCircle2 className="w-3.5 h-3.5" />}
@@ -335,29 +335,29 @@ export function ArchitectureView() {
 
       {/* Folder Structure & ERD Blueprints */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <section className="rounded-xl shadow-sm border border-slate-200 bg-white overflow-hidden">
-          <div className="px-6 py-4 bg-[#F3F5F7] border-b border-slate-200">
-            <h2 className="text-sm font-bold text-[#1A2B4A]">
+        <section className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+          <div className="px-6 py-4 bg-surface border-b border-line">
+            <h2 className="text-sm font-bold text-ink">
               {lang === 'ar' ? 'هيكل المجلدات (Modular Monolith)' : 'Modular Monolith Folder Structure'}
             </h2>
           </div>
           <pre
             dir="ltr"
-            className="p-6 text-xs font-mono-tabular text-[#1A2B4A] overflow-x-auto leading-relaxed bg-white"
+            className="p-6 text-xs font-mono-tabular text-ink overflow-x-auto leading-relaxed bg-canvas"
           >
             {MODULAR_STRUCTURE}
           </pre>
         </section>
 
-        <section className="rounded-xl shadow-sm border border-slate-200 bg-white overflow-hidden">
-          <div className="px-6 py-4 bg-[#F3F5F7] border-b border-slate-200">
-            <h2 className="text-sm font-bold text-[#1A2B4A]">
+        <section className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+          <div className="px-6 py-4 bg-surface border-b border-line">
+            <h2 className="text-sm font-bold text-ink">
               {lang === 'ar' ? 'مخطط علاقات الكيانات (Core ERD)' : 'Core Entity-Relationship Diagram (ERD)'}
             </h2>
           </div>
           <pre
             dir="ltr"
-            className="p-6 text-xs font-mono-tabular text-[#1A2B4A] overflow-x-auto leading-relaxed bg-white"
+            className="p-6 text-xs font-mono-tabular text-ink overflow-x-auto leading-relaxed bg-canvas"
           >
             {ERD_DIAGRAM}
           </pre>

@@ -85,10 +85,10 @@ export function RetailProductGrid({
   return (
     <section className="space-y-4">
       {/* Search & Category Controls */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
+      <div className="rounded-2xl border border-line bg-canvas p-4 shadow-[var(--shadow-card)] space-y-3">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-[#1A2B4A]/45 absolute top-1/2 -translate-y-1/2 start-3" />
+            <Search className="w-4 h-4 text-muted absolute top-1/2 -translate-y-1/2 start-3" />
             <input
               type="text"
               value={searchQuery}
@@ -98,11 +98,11 @@ export function RetailProductGrid({
                   ? 'ابحث بالاسم أو الرمز أو الحقول المخصصة...'
                   : 'Search products by name, SKU code, or custom attributes...'
               }
-              className="w-full h-10 ps-9 pe-3 rounded-lg border border-slate-200 bg-[#F3F5F7]/50 focus:bg-white text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A] transition-colors"
+              className="w-full h-10 ps-9 pe-3 rounded-xl border border-line bg-surface/50 focus:bg-canvas text-sm text-ink focus:outline-none focus:border-ink transition-colors"
             />
           </div>
 
-          <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-[#F3F5F7] border border-slate-200 self-start sm:self-auto shrink-0">
+          <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface border border-line self-start sm:self-auto shrink-0">
             {(['ALL', 'PRODUCT', 'SERVICE'] as const).map((type) => {
               const active = typeFilter === type;
               const label =
@@ -124,8 +124,8 @@ export function RetailProductGrid({
                   onClick={() => setTypeFilter(type)}
                   className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors whitespace-nowrap ${
                     active
-                      ? 'bg-white text-[#1A2B4A] border border-slate-200/80 shadow-sm'
-                      : 'text-[#1A2B4A]/65 hover:text-[#1A2B4A]'
+                      ? 'bg-canvas text-ink border border-line/80 shadow-[var(--shadow-card)]'
+                      : 'text-muted hover:text-ink'
                   }`}
                 >
                   {label}
@@ -137,9 +137,9 @@ export function RetailProductGrid({
 
         {/* Dynamic Schema Bridge Hint when no price custom field is registered on ITEM */}
         {!priceFieldKey && onEnablePriceField && (
-          <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-[#1A2B4A]/75">
+          <div className="pt-3 border-t border-canvas flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-ink/75">
             <div className="flex items-center gap-2">
-              <SlidersHorizontal className="w-3.5 h-3.5 text-[#FF7A00] shrink-0" />
+              <SlidersHorizontal className="w-3.5 h-3.5 text-brand shrink-0" />
               <span>
                 {lang === 'ar'
                   ? 'لا يوجد حقل مخصص للسعر على الأصناف بعد. يمكنك تفعيل حقل unit_price عبر محرك التخصيص أو تحديد السعر مباشرة في السلة.'
@@ -150,9 +150,9 @@ export function RetailProductGrid({
               type="button"
               disabled={enablingPriceField}
               onClick={() => void onEnablePriceField()}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-[#F3F5F7] hover:bg-white text-xs font-semibold text-[#1A2B4A] transition-all duration-150 hover:scale-105 active:scale-95 whitespace-nowrap shrink-0 self-start sm:self-auto"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-line bg-surface hover:bg-canvas text-xs font-semibold text-ink transition-all duration-150 whitespace-nowrap shrink-0 self-start sm:self-auto"
             >
-              <Tag className="w-3.5 h-3.5 text-[#FF7A00]" />
+              <Tag className="w-3.5 h-3.5 text-brand" />
               <span>
                 {enablingPriceField
                   ? lang === 'ar'
@@ -173,12 +173,12 @@ export function RetailProductGrid({
           {[1, 2, 3, 4, 5, 6].map((idx) => (
             <div
               key={idx}
-              className="h-44 rounded-xl border border-slate-200 bg-[#F3F5F7]/70 animate-pulse"
+              className="h-44 rounded-2xl border border-line bg-surface/70 animate-pulse"
             />
           ))}
         </div>
       ) : filteredItems.length === 0 ? (
-        <div className="rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="rounded-2xl border border-line bg-canvas shadow-[var(--shadow-card)]">
           <EmptyState
             variant="products"
             title={lang === 'ar' ? 'لا توجد أصناف مطابقة' : 'No matching items found'}
@@ -211,17 +211,17 @@ export function RetailProductGrid({
                     onAddToCart(item, price, source);
                   }
                 }}
-                className={`group rounded-xl border bg-white p-4 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex flex-col justify-between gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF7A00] ${
+                className={`group rounded-2xl border bg-canvas p-4 shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-lift)] transition-all duration-200 cursor-pointer flex flex-col justify-between gap-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${
                   qtyInCart > 0
-                    ? 'border-[#2ECC71] ring-1 ring-[#2ECC71]/25'
-                    : 'border-slate-200 hover:border-[#1A2B4A]/35'
+                    ? 'border-success ring-1 ring-success/25'
+                    : 'border-line hover:border-ink/35'
                 }`}
               >
                 <div className="space-y-2.5">
                   {/* Quiet Unboxed Metadata */}
-                  <div className="flex items-center justify-between gap-2 text-xs text-[#1A2B4A]/60">
+                  <div className="flex items-center justify-between gap-2 text-xs text-muted">
                     <div className="flex items-center gap-1.5 min-w-0 truncate">
-                      <span className="font-mono-tabular font-semibold text-[#1A2B4A]/75">
+                      <span className="font-mono-tabular font-semibold text-ink/75">
                         {item.code}
                       </span>
                       <span aria-hidden="true">·</span>
@@ -237,11 +237,11 @@ export function RetailProductGrid({
                       <span aria-hidden="true">·</span>
                       <span>{item.unit}</span>
                     </div>
-                    <Package className="w-3.5 h-3.5 text-[#1A2B4A]/40 shrink-0 group-hover:text-[#FF7A00] transition-colors" />
+                    <Package className="w-3.5 h-3.5 text-muted shrink-0 group-hover:text-brand transition-colors" />
                   </div>
 
                   {/* Product Name */}
-                  <h3 className="text-base font-bold text-[#1A2B4A] leading-snug line-clamp-2">
+                  <h3 className="text-base font-bold text-ink leading-snug line-clamp-2">
                     {item.name}
                   </h3>
 
@@ -254,10 +254,10 @@ export function RetailProductGrid({
                         return (
                           <div
                             key={cf.id}
-                            className="flex items-center justify-between gap-2 text-xs text-[#1A2B4A]/60"
+                            className="flex items-center justify-between gap-2 text-xs text-muted"
                           >
                             <span className="truncate">{getFieldLabel(cf, lang)}</span>
-                            <span className="font-mono-tabular font-medium text-[#1A2B4A]/80 truncate">
+                            <span className="font-mono-tabular font-medium text-ink/80 truncate">
                               {String(val)}
                             </span>
                           </div>
@@ -268,16 +268,16 @@ export function RetailProductGrid({
                 </div>
 
                 {/* Price + Add CTA */}
-                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
+                <div className="pt-3 border-t border-canvas flex items-center justify-between gap-3">
                   <div>
-                    <span className="font-mono-tabular text-base font-extrabold text-[#1A2B4A] tabular-nums">
+                    <span className="font-mono-tabular text-base font-extrabold text-ink tabular-nums">
                       {price > 0
                         ? formatCurrencyAmount(price, currency)
                         : lang === 'ar'
                         ? 'يحدد بالسلة'
                         : 'Set in cart'}
                     </span>
-                    <span className="block text-[11px] text-[#1A2B4A]/50">
+                    <span className="block text-xs text-muted">
                       / {item.unit}
                     </span>
                   </div>
@@ -292,10 +292,10 @@ export function RetailProductGrid({
                         e.stopPropagation();
                         onAddToCart(item, price, source);
                       }}
-                      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 hover:scale-105 active:scale-95 whitespace-nowrap ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 whitespace-nowrap ${
                         qtyInCart > 0
-                          ? 'bg-[#2ECC71] hover:bg-[#27ae60] text-white'
-                          : 'bg-[#1A2B4A] group-hover:bg-[#FF7A00] text-white'
+                          ? 'bg-success hover:bg-success-hover text-white'
+                          : 'bg-brand group-hover:bg-brand-hover text-white'
                       }`}
                     >
                       <Plus className="w-3.5 h-3.5" />

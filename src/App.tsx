@@ -26,9 +26,9 @@ function WorkspaceRouter() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center gap-4 p-6">
+      <div className="min-h-screen bg-canvas flex flex-col items-center justify-center gap-4 p-6">
         <KlaroLogo size={38} wordmark={tr('brandName')} />
-        <p className="text-xs font-medium text-[#1A2B4A]/65">{tr('loadingWorkspace')}</p>
+        <p className="text-xs font-medium text-muted">{tr('loadingWorkspace')}</p>
       </div>
     );
   }

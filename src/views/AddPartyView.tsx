@@ -155,17 +155,17 @@ export function AddPartyView() {
         <button
           type="button"
           onClick={() => setActiveModule('parties', 'list')}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1A2B4A]/70 hover:text-[#1A2B4A] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink/70 hover:text-ink transition-colors"
         >
           <ArrowLeft className={`w-3.5 h-3.5 ${lang === 'ar' ? 'rotate-180' : ''}`} />
           <span>{tr('backToParties')}</span>
         </button>
 
         <div className="space-y-1">
-          <h1 className="text-2xl font-extrabold tracking-tight text-[#1A2B4A]">
+          <h1 className="text-2xl font-extrabold tracking-tight text-ink">
             {tr('addNewPartyTitle')}
           </h1>
-          <p className="text-sm text-[#1A2B4A]/65">{tr('addNewPartySubtitle')}</p>
+          <p className="text-sm text-muted">{tr('addNewPartySubtitle')}</p>
         </div>
       </div>
 
@@ -173,17 +173,17 @@ export function AddPartyView() {
       <form
         noValidate
         onSubmit={(e) => void handleSubmit(e)}
-        className="rounded-xl shadow-sm border border-slate-200 bg-white overflow-hidden"
+        className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden"
       >
         {/* Base Abstract Party Section */}
-        <div className="px-6 py-4 bg-[#F3F5F7] border-b border-slate-200 flex items-center justify-between">
-          <h2 className="text-xs font-bold text-[#1A2B4A] uppercase tracking-wider">
+        <div className="px-6 py-4 bg-surface border-b border-line flex items-center justify-between">
+          <h2 className="text-xs font-bold text-ink uppercase tracking-wider">
             {tr('partiesTitle')}
           </h2>
           <button
             type="button"
             onClick={() => setActiveModule('config')}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1A2B4A]/70 hover:text-[#FF7A00] transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink/70 hover:text-brand transition-colors"
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
             <span>{tr('configTitle')}</span>
@@ -192,8 +192,8 @@ export function AddPartyView() {
 
         <div className="p-6 space-y-5">
           <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-[#1A2B4A]">
-              {tr('partyName')} <span className="text-[#FF7A00]">*</span>
+            <label className="block text-xs font-medium text-ink">
+              {tr('partyName')} <span className="text-brand">*</span>
             </label>
             <input
               type="text"
@@ -210,10 +210,10 @@ export function AddPartyView() {
                 }
               }}
               aria-invalid={Boolean(fieldErrors.__name)}
-              className={`w-full h-10 px-3 rounded-lg border text-sm text-[#1A2B4A] focus:outline-none ${
+              className={`w-full h-10 px-3 rounded-xl border text-sm text-ink focus:outline-none ${
                 fieldErrors.__name
                   ? 'border-red-500 focus:border-red-600'
-                  : 'border-slate-200 focus:border-[#1A2B4A]'
+                  : 'border-line focus:border-ink'
               }`}
             />
             {fieldErrors.__name && (
@@ -223,13 +223,13 @@ export function AddPartyView() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-[#1A2B4A]">
+              <label className="block text-xs font-medium text-ink">
                 {tr('partyType')}
               </label>
               <select
                 value={partyType}
                 onChange={(e) => setPartyType(e.target.value as PartyType)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                className="w-full h-10 px-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
               >
                 <option value="CLIENT">{tr('typeCLIENT')}</option>
                 <option value="SUPPLIER">{tr('typeSUPPLIER')}</option>
@@ -238,13 +238,13 @@ export function AddPartyView() {
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-[#1A2B4A]">
+              <label className="block text-xs font-medium text-ink">
                 {tr('contactStatus')}
               </label>
               <select
                 value={contactStatus}
                 onChange={(e) => setContactStatus(e.target.value as ContactStatus)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                className="w-full h-10 px-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
               >
                 <option value="ACTIVE">{tr('statusACTIVE')}</option>
                 <option value="PENDING">{tr('statusPENDING')}</option>
@@ -255,7 +255,7 @@ export function AddPartyView() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-[#1A2B4A]">
+              <label className="block text-xs font-medium text-ink">
                 {tr('email')}
               </label>
               <input
@@ -263,12 +263,12 @@ export function AddPartyView() {
                 maxLength={FIELD_LIMITS.EMAIL_MAX}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                className="w-full h-10 px-3 rounded-xl border border-line text-sm text-ink focus:outline-none focus:border-ink"
               />
             </div>
 
             <div className="space-y-1.5">
-              <label className="block text-xs font-medium text-[#1A2B4A]">
+              <label className="block text-xs font-medium text-ink">
                 {tr('phone')}
               </label>
               <input
@@ -276,16 +276,16 @@ export function AddPartyView() {
                 maxLength={FIELD_LIMITS.PHONE_MAX}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-slate-200 text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                className="w-full h-10 px-3 rounded-xl border border-line text-sm text-ink focus:outline-none focus:border-ink"
               />
             </div>
           </div>
 
           {/* Dynamic Custom Fields Metadata Section */}
           <div className="pt-2">
-            <div className="flex items-center justify-between text-xs text-[#1A2B4A]/65 mb-2">
-              <span className="inline-flex items-center gap-1.5 font-semibold text-[#1A2B4A]">
-                <Database className="w-3.5 h-3.5 text-[#FF7A00]" />
+            <div className="flex items-center justify-between text-xs text-muted mb-2">
+              <span className="inline-flex items-center gap-1.5 font-semibold text-ink">
+                <Database className="w-3.5 h-3.5 text-brand" />
                 <span>{tr('customFieldsSection')}</span>
               </span>
               {!loadingSchema && (
@@ -296,15 +296,15 @@ export function AddPartyView() {
             </div>
 
             {loadingSchema ? (
-              <div className="p-4 rounded-lg bg-[#F3F5F7] border border-slate-200 text-xs text-[#1A2B4A]/65">
+              <div className="p-4 rounded-xl bg-surface border border-line text-xs text-muted">
                 {tr('loadingDynamicSchema')}
               </div>
             ) : schemaError ? (
-              <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-xs text-red-800">
+              <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-xs text-red-800">
                 {schemaError}
               </div>
             ) : dynamicFields.length === 0 ? (
-              <div className="p-4 rounded-lg bg-[#F3F5F7] border border-slate-200 text-xs text-[#1A2B4A]/65">
+              <div className="p-4 rounded-xl bg-surface border border-line text-xs text-muted">
                 {tr('noCustomFieldsHint')}
               </div>
             ) : (
@@ -318,18 +318,18 @@ export function AddPartyView() {
           </div>
         </div>
 
-        <div className="px-6 py-4 bg-[#F3F5F7] border-t border-slate-200 flex items-center justify-end gap-3">
+        <div className="px-6 py-4 bg-surface border-t border-line flex items-center justify-end gap-3">
           <button
             type="button"
             onClick={() => setActiveModule('parties', 'list')}
-            className="px-4 py-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-[#1A2B4A] hover:bg-slate-50"
+            className="px-4 py-2 rounded-xl border border-line bg-canvas text-xs font-medium text-ink hover:bg-surface"
           >
             {tr('cancel')}
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="px-5 py-2 rounded-lg bg-[#FF7A00] hover:bg-[#e56e00] disabled:opacity-60 text-white text-xs font-semibold transition-all duration-150 hover:scale-105 active:scale-95 hover:brightness-105"
+            className="px-5 py-2 rounded-xl bg-brand hover:bg-brand-hover disabled:opacity-60 text-white text-xs font-semibold transition-all duration-150 hover:brightness-105"
           >
             {tr('save')}
           </button>

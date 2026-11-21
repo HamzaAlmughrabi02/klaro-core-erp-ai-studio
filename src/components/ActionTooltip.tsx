@@ -36,7 +36,7 @@ export function ActionTooltip({
       {children}
       <span
         role="tooltip"
-        className={`pointer-events-none absolute z-50 px-2.5 py-1.5 rounded-md bg-[#1A2B4A] text-white text-[11px] font-medium whitespace-nowrap shadow-md opacity-0 scale-95 group-hover/tooltip:opacity-100 group-hover/tooltip:scale-100 group-focus-within/tooltip:opacity-100 group-focus-within/tooltip:scale-100 transition-all duration-150 ${positionClasses}`}
+        className={`pointer-events-none absolute z-50 px-2.5 py-1.5 rounded-lg bg-night text-white text-xs font-semibold whitespace-nowrap shadow-[var(--shadow-lift)] opacity-0 scale-95 group-hover/tooltip:opacity-100 group-hover/tooltip:scale-100 group-focus-within/tooltip:opacity-100 group-focus-within/tooltip:scale-100 transition-all duration-150 ${positionClasses}`}
       >
         {label}
       </span>

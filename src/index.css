@@ -1,11 +1,67 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   KLARO DESIGN SYSTEM v2 — "Violet Dock"
+   Dark violet navigation, light canvas, large-radius cards, soft violet shadows.
+   Every colour below is a semantic token; views must not use raw hex values.
+   Contrast (WCAG 2.2 AA): ink/white 18.2:1 · muted/white 5.4:1 · muted/canvas 4.8:1
+   white/brand 5.8:1 · sidebar-text/night 11.4:1 · sidebar-muted/night 6.7:1
+   ========================================================================== */
+
+@theme {
+  /* Typography */
+  --font-sans: 'Plus Jakarta Sans', 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
+  --font-arabic: 'IBM Plex Sans Arabic', 'Tajawal', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Surfaces */
+  --color-canvas: #F3F1F9;
+  --color-canvas-2: #EAE6F5;
+  --color-surface: #FFFFFF;
+  --color-line: #E6E2F0;
+  --color-line-strong: #CFC8E3;
+
+  /* Text */
+  --color-ink: #17112B;
+  --color-muted: #6B6785;
+
+  /* Brand */
+  --color-brand: #6D3DF2;
+  --color-brand-hover: #5B2EDB;
+  --color-brand-soft: #EEE9FF;
+  --color-brand-glow: #A78BFA;
+
+  /* Dark navigation / hero */
+  --color-night: #0E0A1E;
+  --color-night-2: #171132;
+  --color-night-3: #231A48;
+  --color-night-line: #2A2250;
+  --color-night-text: #C9C3E0;
+  --color-night-muted: #9A93B8;
+
+  /* Status */
+  --color-success: #12A150;
+  --color-success-hover: #0E8744;
+  --color-warning: #E58A00;
+  --color-danger: #DC2626;
+
+  /* Radii */
+  --radius-control: 12px;
+  --radius-card: 20px;
+  --radius-hero: 28px;
+
+  /* Shadows */
+  --shadow-card: 0 1px 2px rgb(23 17 43 / 0.04), 0 8px 24px -12px rgb(76 45 170 / 0.14);
+  --shadow-lift: 0 2px 4px rgb(23 17 43 / 0.05), 0 18px 36px -14px rgb(76 45 170 / 0.28);
+  --shadow-hero: 0 24px 48px -20px rgb(14 10 30 / 0.65);
+}
+
 :root {
-  --klaro-navy: #1A2B4A;
-  --klaro-green: #2ECC71;
-  --klaro-orange: #FF7A00;
-  --klaro-fog: #F3F5F7;
-  --klaro-white: #FFFFFF;
+  --klaro-navy: var(--color-ink);
+  --klaro-orange: var(--color-brand);
+  --klaro-green: var(--color-success);
+  --klaro-fog: var(--color-canvas);
+  --klaro-white: var(--color-surface);
 }
 
 @layer base {
@@ -15,16 +71,17 @@
   }
 
   html[dir="ltr"] body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-sans);
   }
 
   html[dir="rtl"] body {
-    font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-arabic);
   }
 
   body {
-    background-color: var(--klaro-white);
-    color: var(--klaro-navy);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
   }
 
   h1 {
@@ -36,33 +93,99 @@
     font-weight: 700;
     letter-spacing: -0.015em;
   }
+
+  /* Visible keyboard focus everywhere (WCAG 2.4.7) */
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  ::selection {
+    background: rgb(109 61 242 / 0.18);
+  }
+
+  ::placeholder {
+    color: var(--color-muted);
+    opacity: 0.8;
+  }
 }
 
 @layer components {
+  /* Cards */
+  .klaro-card {
+    @apply bg-surface rounded-[20px] border border-line;
+    box-shadow: var(--shadow-card);
+  }
+
   .klaro-card-interactive {
-    @apply rounded-xl shadow-sm border border-slate-200 transition-all duration-200 hover:shadow-md hover:-translate-y-1;
+    @apply bg-surface rounded-[20px] border border-line transition-all duration-200 hover:-translate-y-0.5;
+    box-shadow: var(--shadow-card);
+  }
+  .klaro-card-interactive:hover {
+    box-shadow: var(--shadow-lift);
   }
 
+  /* Hero card: dark violet panel (like "Dashboard Designs" folder in the reference) */
+  .klaro-hero {
+    @apply text-white rounded-[28px] relative overflow-hidden;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgb(109 61 242 / 0.55) 0%, transparent 55%),
+      linear-gradient(160deg, var(--color-night-3) 0%, var(--color-night) 100%);
+    box-shadow: var(--shadow-hero);
+  }
+
+  /* Tables */
   .klaro-table-row {
-    @apply hover:bg-slate-50 transition-colors duration-200 cursor-pointer;
+    @apply hover:bg-brand-soft/60 transition-colors duration-150 cursor-pointer;
   }
 
+  /* Buttons */
   .klaro-btn-primary {
-    @apply bg-[#FF7A00] hover:bg-[#e56e00] text-white font-semibold transition-all duration-150 hover:scale-105 active:scale-95 hover:brightness-105;
+    @apply bg-brand hover:bg-brand-hover text-white font-semibold rounded-xl transition-colors duration-150 active:translate-y-px;
+    box-shadow: 0 8px 18px -8px rgb(109 61 242 / 0.7);
   }
 
   .klaro-btn-interactive {
-    @apply transition-all duration-150 hover:scale-105 active:scale-95 hover:brightness-105;
+    @apply transition-all duration-150 active:translate-y-px hover:brightness-105;
+  }
+
+  /* Segmented pill tabs */
+  .klaro-tabs {
+    @apply inline-flex items-center gap-1 p-1 rounded-2xl bg-canvas-2/70 border border-line;
+  }
+  .klaro-tab {
+    @apply px-3.5 py-2 rounded-xl text-sm font-semibold text-muted transition-colors hover:text-ink;
+  }
+  .klaro-tab[aria-selected="true"] {
+    @apply bg-surface text-ink;
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Badge / count chip */
+  .klaro-chip {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-soft text-brand text-xs font-semibold;
+  }
+
+  /* Page header */
+  .klaro-page-title {
+    @apply text-2xl font-extrabold tracking-tight text-ink;
   }
 }
 
 .font-mono-tabular {
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* Dark sidebar scrollbar */
+.klaro-scroll-dark {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-night-line) transparent;
 }
 
 @media (prefers-reduced-motion: reduce) {

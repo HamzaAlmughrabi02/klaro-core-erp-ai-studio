@@ -242,13 +242,13 @@ export function IamView() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <ShieldCheck className="w-5 h-5 text-[#1A2B4A]" />
-            <h1 className="text-2xl font-extrabold tracking-tight text-[#1A2B4A]">
+            <ShieldCheck className="w-5 h-5 text-ink" />
+            <h1 className="text-2xl font-extrabold tracking-tight text-ink">
               {tr('iamTitle')}
             </h1>
             <InfoTooltip text={tr('iamTooltip')} />
           </div>
-          <p className="text-sm text-[#1A2B4A]/65">{tr('iamSubtitle')}</p>
+          <p className="text-sm text-muted">{tr('iamSubtitle')}</p>
         </div>
 
         {canManageIam && (
@@ -257,7 +257,7 @@ export function IamView() {
               <button
                 type="button"
                 onClick={() => openGrantModal()}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#FF7A00] hover:bg-[#e56e00] text-white text-xs font-semibold transition-all duration-150 hover:scale-105 active:scale-95 hover:brightness-105 whitespace-nowrap"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-semibold transition-all duration-150 hover:brightness-105 whitespace-nowrap"
               >
                 <Clock className="w-4 h-4" />
                 <span>{tr('grantTempPermission')}</span>
@@ -266,7 +266,7 @@ export function IamView() {
             <button
               type="button"
               onClick={() => setDrawerOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:bg-[#F3F5F7] text-[#1A2B4A] text-xs font-semibold transition-all duration-150 hover:scale-105 active:scale-95 whitespace-nowrap"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-line bg-canvas hover:bg-surface text-ink text-xs font-semibold transition-all duration-150 whitespace-nowrap"
             >
               <Plus className="w-4 h-4" />
               <span>{tr('addUser')}</span>
@@ -276,20 +276,20 @@ export function IamView() {
       </div>
 
       {!canManageIam && (
-        <div className="px-4 py-3 rounded-lg bg-[#F3F5F7] border border-slate-200 text-xs text-[#1A2B4A]/80">
+        <div className="px-4 py-3 rounded-xl bg-surface border border-line text-xs text-ink/80">
           <strong>{tr('permissionNotice')}:</strong> {tr('readOnlyIamNotice')}
         </div>
       )}
 
       {/* Segmented Section Tabs */}
-      <div className="inline-flex items-center gap-1 p-1 rounded-lg bg-[#F3F5F7] border border-slate-200 self-start">
+      <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface border border-line self-start">
         <button
           type="button"
           onClick={() => setActiveTab('users')}
           className={`px-3.5 py-1.5 rounded-md text-xs font-semibold transition-colors whitespace-nowrap ${
             activeTab === 'users'
-              ? 'bg-white text-[#1A2B4A] border border-slate-200/80 shadow-sm'
-              : 'text-[#1A2B4A]/65 hover:text-[#1A2B4A]'
+              ? 'bg-canvas text-ink border border-line/80 shadow-[var(--shadow-card)]'
+              : 'text-muted hover:text-ink'
           }`}
         >
           {tr('tabUsersRoles')}
@@ -299,13 +299,13 @@ export function IamView() {
           onClick={() => setActiveTab('delegations')}
           className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md text-xs font-semibold transition-colors whitespace-nowrap ${
             activeTab === 'delegations'
-              ? 'bg-white text-[#1A2B4A] border border-slate-200/80 shadow-sm'
-              : 'text-[#1A2B4A]/65 hover:text-[#1A2B4A]'
+              ? 'bg-canvas text-ink border border-line/80 shadow-[var(--shadow-card)]'
+              : 'text-muted hover:text-ink'
           }`}
         >
-          <Clock className="w-3.5 h-3.5 text-[#FF7A00]" />
+          <Clock className="w-3.5 h-3.5 text-brand" />
           <span>{tr('tabTempDelegations')}</span>
-          <span className="font-mono-tabular text-[11px] font-bold text-[#FF7A00]">
+          <span className="font-mono-tabular text-xs font-bold text-brand">
             {activeDelegations.length}
           </span>
         </button>
@@ -314,11 +314,11 @@ export function IamView() {
       {activeTab === 'users' ? (
         <div className="space-y-8">
           {/* Users Table */}
-          <div className="rounded-xl shadow-sm border border-slate-200 bg-white overflow-hidden">
+          <div className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-start border-collapse">
                 <thead>
-                  <tr className="bg-[#F3F5F7] border-b border-slate-200 text-xs font-semibold text-[#1A2B4A]/70">
+                  <tr className="bg-canvas border-b border-line text-xs font-semibold text-ink/70">
                     <th className="py-3 px-4 text-start whitespace-nowrap">{tr('displayName')}</th>
                     <th className="py-3 px-4 text-start whitespace-nowrap">{tr('email')}</th>
                     <th className="py-3 px-4 text-start whitespace-nowrap">{tr('role')}</th>
@@ -328,16 +328,16 @@ export function IamView() {
                     )}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 text-sm">
+                <tbody className="divide-y divide-line text-sm">
                   {users.map((u) => {
                     const isSelf = u.uid === profile?.uid;
                     const userTempList = delegationsByUserId.get(u.uid) ?? [];
                     return (
                       <tr
                         key={u.id}
-                        className="h-12 hover:bg-slate-50 transition-colors duration-200"
+                        className="h-12 hover:bg-surface transition-colors duration-200"
                       >
-                        <td className="py-2.5 px-4 font-semibold text-[#1A2B4A] whitespace-nowrap">
+                        <td className="py-2.5 px-4 font-semibold text-ink whitespace-nowrap">
                           <div className="flex items-center gap-2.5">
                             <span>{u.displayName}</span>
                             {userTempList.length > 0 && (
@@ -348,7 +348,7 @@ export function IamView() {
                                 <button
                                   type="button"
                                   onClick={() => setActiveTab('delegations')}
-                                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#FF7A00] hover:underline"
+                                  className="inline-flex items-center gap-1 text-xs font-semibold text-brand hover:underline"
                                 >
                                   <ShieldAlert className="w-3.5 h-3.5" />
                                   <span>
@@ -359,7 +359,7 @@ export function IamView() {
                             )}
                           </div>
                         </td>
-                        <td className="py-2.5 px-4 text-xs text-[#1A2B4A]/70 whitespace-nowrap">
+                        <td className="py-2.5 px-4 text-xs text-ink/70 whitespace-nowrap">
                           {u.email}
                         </td>
                         <td className="py-2.5 px-4 whitespace-nowrap">
@@ -367,14 +367,14 @@ export function IamView() {
                             <select
                               value={u.roleCode}
                               onChange={(e) => void handleUpdateRole(u, e.target.value as RoleCode)}
-                              className="h-8 px-2.5 rounded-md border border-slate-200 bg-white text-xs font-semibold text-[#1A2B4A]"
+                              className="h-8 px-2.5 rounded-md border border-line bg-canvas text-xs font-semibold text-ink"
                             >
                               <option value="ADMIN">{tr('roleADMIN')}</option>
                               <option value="ACCOUNTANT">{tr('roleACCOUNTANT')}</option>
                               <option value="EMPLOYEE">{tr('roleEMPLOYEE')}</option>
                             </select>
                           ) : (
-                            <span className="text-xs font-semibold text-[#1A2B4A]">
+                            <span className="text-xs font-semibold text-ink">
                               {tr(`role${u.roleCode}`)}
                             </span>
                           )}
@@ -384,7 +384,7 @@ export function IamView() {
                             <button
                               onClick={() => void handleToggleActive(u)}
                               className={`text-xs font-semibold hover:underline ${
-                                u.isActive ? 'text-[#2ECC71]' : 'text-[#1A2B4A]/50'
+                                u.isActive ? 'text-success' : 'text-muted'
                               }`}
                             >
                               {u.isActive ? tr('active') : tr('inactive')}
@@ -392,7 +392,7 @@ export function IamView() {
                           ) : (
                             <span
                               className={`text-xs font-semibold ${
-                                u.isActive ? 'text-[#2ECC71]' : 'text-[#1A2B4A]/50'
+                                u.isActive ? 'text-success' : 'text-muted'
                               }`}
                             >
                               {u.isActive ? tr('active') : tr('inactive')}
@@ -405,9 +405,9 @@ export function IamView() {
                               <button
                                 type="button"
                                 onClick={() => openGrantModal(u.uid)}
-                                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-[#F3F5F7] text-xs font-semibold text-[#1A2B4A] transition-all duration-150 hover:scale-105 active:scale-95"
+                                className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-line bg-canvas hover:bg-surface text-xs font-semibold text-ink transition-all duration-150"
                               >
-                                <KeyRound className="w-3.5 h-3.5 text-[#FF7A00]" />
+                                <KeyRound className="w-3.5 h-3.5 text-brand" />
                                 <span>{tr('temporaryLabel')}</span>
                               </button>
                             </ActionTooltip>
@@ -423,12 +423,12 @@ export function IamView() {
 
           {/* RBAC Permissions Matrix */}
           <div className="space-y-3">
-            <h2 className="text-base font-bold text-[#1A2B4A]">{tr('permissionsMatrix')}</h2>
-            <div className="rounded-xl shadow-sm border border-slate-200 bg-white overflow-hidden">
+            <h2 className="text-base font-bold text-ink">{tr('permissionsMatrix')}</h2>
+            <div className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-start border-collapse">
                   <thead>
-                    <tr className="bg-[#F3F5F7] border-b border-slate-200 text-xs font-semibold text-[#1A2B4A]/70">
+                    <tr className="bg-canvas border-b border-line text-xs font-semibold text-ink/70">
                       <th className="py-3 px-4 text-start whitespace-nowrap">
                         {tr('permissionsMatrix')}
                       </th>
@@ -439,12 +439,12 @@ export function IamView() {
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-200 text-xs">
+                  <tbody className="divide-y divide-line text-xs">
                     {ALL_PERMISSIONS.map((perm) => (
-                      <tr key={perm} className="h-10 hover:bg-slate-50 transition-colors duration-200">
-                        <td className="py-2.5 px-4 font-medium text-[#1A2B4A]">
+                      <tr key={perm} className="h-10 hover:bg-surface transition-colors duration-200">
+                        <td className="py-2.5 px-4 font-medium text-ink">
                           {tr(PERM_LABEL_KEYS[perm])}
-                          <span className="font-mono-tabular text-[#1A2B4A]/45 ms-2">
+                          <span className="font-mono-tabular text-muted ms-2">
                             ({perm})
                           </span>
                         </td>
@@ -453,9 +453,9 @@ export function IamView() {
                           return (
                             <td key={r.code} className="py-2.5 px-4 text-center">
                               {granted ? (
-                                <Check className="w-4 h-4 text-[#2ECC71] mx-auto" />
+                                <Check className="w-4 h-4 text-success mx-auto" />
                               ) : (
-                                <Minus className="w-4 h-4 text-slate-300 mx-auto" />
+                                <Minus className="w-4 h-4 text-line-strong mx-auto" />
                               )}
                             </td>
                           );
@@ -470,7 +470,7 @@ export function IamView() {
         </div>
       ) : (
         /* Active Temporary Permissions Table */
-        <div className="rounded-xl shadow-sm border border-slate-200 bg-white overflow-hidden">
+        <div className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
           {activeDelegations.length === 0 ? (
             <EmptyState
               variant="audit"
@@ -483,7 +483,7 @@ export function IamView() {
             <div className="overflow-x-auto">
               <table className="w-full text-start border-collapse">
                 <thead>
-                  <tr className="bg-[#F3F5F7] border-b border-slate-200 text-xs font-semibold text-[#1A2B4A]/70">
+                  <tr className="bg-canvas border-b border-line text-xs font-semibold text-ink/70">
                     <th className="py-3 px-4 text-start whitespace-nowrap">{tr('displayName')}</th>
                     <th className="py-3 px-4 text-start whitespace-nowrap">
                       {tr('selectPermission')}
@@ -496,34 +496,34 @@ export function IamView() {
                     )}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 text-sm">
+                <tbody className="divide-y divide-line text-sm">
                   {activeDelegations.map((del) => {
                     const remainingMs = del.expiresAt.getTime() - nowMs;
                     const isUrgent = remainingMs < 60 * 60 * 1000;
                     return (
                       <tr
                         key={del.id}
-                        className="h-12 hover:bg-slate-50 transition-colors duration-200"
+                        className="h-12 hover:bg-surface transition-colors duration-200"
                       >
                         <td className="py-2.5 px-4 whitespace-nowrap">
-                          <div className="font-semibold text-[#1A2B4A]">{del.userName}</div>
-                          <div className="text-xs text-[#1A2B4A]/60">{del.userEmail}</div>
+                          <div className="font-semibold text-ink">{del.userName}</div>
+                          <div className="text-xs text-muted">{del.userEmail}</div>
                         </td>
                         <td className="py-2.5 px-4 whitespace-nowrap">
-                          <div className="text-xs font-semibold text-[#1A2B4A]">
+                          <div className="text-xs font-semibold text-ink">
                             {tr(PERM_LABEL_KEYS[del.permission])}
                           </div>
-                          <div className="font-mono-tabular text-[11px] text-[#1A2B4A]/55">
+                          <div className="font-mono-tabular text-xs text-muted">
                             {del.permission}
                           </div>
                         </td>
-                        <td className="py-2.5 px-4 text-xs font-medium text-[#1A2B4A]/80 whitespace-nowrap">
+                        <td className="py-2.5 px-4 text-xs font-medium text-ink/80 whitespace-nowrap">
                           {del.grantedByName}
                         </td>
                         <td className="py-2.5 px-4 whitespace-nowrap">
                           <span
                             className={`inline-flex items-center gap-1.5 font-mono-tabular text-xs font-bold tabular-nums ${
-                              isUrgent ? 'text-[#FF7A00]' : 'text-[#2ECC71]'
+                              isUrgent ? 'text-brand' : 'text-success'
                             }`}
                           >
                             <Clock className="w-3.5 h-3.5" />
@@ -532,7 +532,7 @@ export function IamView() {
                             </span>
                           </span>
                         </td>
-                        <td className="py-2.5 px-4 font-mono-tabular text-xs text-[#1A2B4A]/65 whitespace-nowrap">
+                        <td className="py-2.5 px-4 font-mono-tabular text-xs text-muted whitespace-nowrap">
                           {del.expiresAt.toLocaleString()}
                         </td>
                         {canManageIam && (
@@ -542,7 +542,7 @@ export function IamView() {
                                 type="button"
                                 onClick={() => void handleRevoke(del)}
                                 disabled={revokingId === del.id}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-200 bg-white hover:bg-red-50 disabled:opacity-60 text-red-700 text-xs font-semibold transition-all duration-150 hover:scale-105 active:scale-95"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-red-200 bg-canvas hover:bg-red-50 disabled:opacity-60 text-red-700 text-xs font-semibold transition-all duration-150"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                                 <span>{tr('revokeAccess')}</span>
@@ -568,7 +568,7 @@ export function IamView() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.16 }}
-            className="fixed inset-0 z-50 bg-[#1A2B4A]/40 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-ink/40 flex items-center justify-center p-4"
             onClick={() => setGrantModalOpen(false)}
           >
             <motion.div
@@ -577,12 +577,12 @@ export function IamView() {
               exit={{ opacity: 0, scale: 0.97, y: 8 }}
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-lg bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden"
+              className="w-full max-w-lg bg-canvas rounded-2xl shadow-[var(--shadow-card)] border border-line overflow-hidden"
             >
-              <div className="h-14 px-6 bg-[#F3F5F7] border-b border-slate-200 flex items-center justify-between gap-4">
+              <div className="h-14 px-6 bg-surface border-b border-line flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2 min-w-0">
-                  <Clock className="w-4 h-4 text-[#FF7A00] shrink-0" />
-                  <h2 className="text-sm font-bold text-[#1A2B4A] truncate">
+                  <Clock className="w-4 h-4 text-brand shrink-0" />
+                  <h2 className="text-sm font-bold text-ink truncate">
                     {tr('grantTempPermission')}
                   </h2>
                 </div>
@@ -590,26 +590,26 @@ export function IamView() {
                   type="button"
                   onClick={() => setGrantModalOpen(false)}
                   aria-label={tr('close')}
-                  className="p-1.5 rounded-lg text-[#1A2B4A]/60 hover:bg-white"
+                  className="p-1.5 rounded-xl text-muted hover:bg-canvas"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               <form onSubmit={(e) => void handleGrantSubmit(e)} className="p-6 space-y-5">
-                <p className="text-xs text-[#1A2B4A]/70 leading-relaxed">
+                <p className="text-xs text-ink/70 leading-relaxed">
                   {tr('grantTempPermissionSub')}
                 </p>
 
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-semibold text-[#1A2B4A]">
-                    {tr('selectUser')} <span className="text-[#FF7A00]">*</span>
+                  <label className="block text-xs font-semibold text-ink">
+                    {tr('selectUser')} <span className="text-brand">*</span>
                   </label>
                   <select
                     required
                     value={targetUserId}
                     onChange={(e) => setTargetUserId(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                    className="w-full h-10 px-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
                   >
                     <option value="">{tr('selectUser')}</option>
                     {users.map((u) => (
@@ -621,14 +621,14 @@ export function IamView() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-semibold text-[#1A2B4A]">
-                    {tr('selectPermission')} <span className="text-[#FF7A00]">*</span>
+                  <label className="block text-xs font-semibold text-ink">
+                    {tr('selectPermission')} <span className="text-brand">*</span>
                   </label>
                   <select
                     required
                     value={selectedPermission}
                     onChange={(e) => setSelectedPermission(e.target.value as Permission)}
-                    className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                    className="w-full h-10 px-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
                   >
                     {ALL_PERMISSIONS.map((perm) => (
                       <option key={perm} value={perm}>
@@ -639,13 +639,13 @@ export function IamView() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-semibold text-[#1A2B4A]">
-                    {tr('selectDuration')} <span className="text-[#FF7A00]">*</span>
+                  <label className="block text-xs font-semibold text-ink">
+                    {tr('selectDuration')} <span className="text-brand">*</span>
                   </label>
                   <select
                     value={durationPreset}
                     onChange={(e) => setDurationPreset(e.target.value as DurationPreset)}
-                    className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                    className="w-full h-10 px-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
                   >
                     <option value="1H">{tr('duration1h')}</option>
                     <option value="1D">{tr('duration1d')}</option>
@@ -656,31 +656,31 @@ export function IamView() {
 
                 {durationPreset === 'CUSTOM' && (
                   <div className="space-y-1.5">
-                    <label className="block text-xs font-semibold text-[#1A2B4A]">
-                      {tr('customExpiry')} <span className="text-[#FF7A00]">*</span>
+                    <label className="block text-xs font-semibold text-ink">
+                      {tr('customExpiry')} <span className="text-brand">*</span>
                     </label>
                     <input
                       type="datetime-local"
                       required
                       value={customExpiryInput}
                       onChange={(e) => setCustomExpiryInput(e.target.value)}
-                      className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm font-mono-tabular text-[#1A2B4A] focus:outline-none focus:border-[#1A2B4A]"
+                      className="w-full h-10 px-3 rounded-xl border border-line bg-canvas text-sm font-mono-tabular text-ink focus:outline-none focus:border-ink"
                     />
                   </div>
                 )}
 
-                <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-3">
+                <div className="pt-4 border-t border-line flex items-center justify-end gap-3">
                   <button
                     type="button"
                     onClick={() => setGrantModalOpen(false)}
-                    className="px-4 py-2 rounded-lg border border-slate-200 text-xs font-medium text-[#1A2B4A] hover:bg-[#F3F5F7]"
+                    className="px-4 py-2 rounded-xl border border-line text-xs font-medium text-ink hover:bg-surface"
                   >
                     {tr('cancel')}
                   </button>
                   <button
                     type="submit"
                     disabled={granting}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#FF7A00] hover:bg-[#e56e00] disabled:opacity-60 text-white text-xs font-semibold transition-all duration-150 hover:scale-105 active:scale-95 hover:brightness-105"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand hover:bg-brand-hover disabled:opacity-60 text-white text-xs font-semibold transition-all duration-150 hover:brightness-105"
                   >
                     <KeyRound className="w-3.5 h-3.5" />
                     <span>{tr('grantAccessBtn')}</span>
@@ -700,7 +700,7 @@ export function IamView() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.16 }}
-            className="fixed inset-0 z-50 bg-[#1A2B4A]/35 flex justify-end"
+            className="fixed inset-0 z-50 bg-ink/35 flex justify-end"
           >
             <div className="flex-1" onClick={() => setDrawerOpen(false)} />
             <motion.div
@@ -708,13 +708,13 @@ export function IamView() {
               animate={{ x: 0 }}
               exit={{ x: lang === 'ar' ? -420 : 420 }}
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full max-w-md bg-white h-full border-s border-slate-200 flex flex-col"
+              className="w-full max-w-md bg-canvas h-full border-s border-line flex flex-col"
             >
-              <div className="h-16 px-6 border-b border-slate-200 flex items-center justify-between shrink-0">
-                <h2 className="text-base font-bold text-[#1A2B4A]">{tr('addUser')}</h2>
+              <div className="h-16 px-6 border-b border-line flex items-center justify-between shrink-0">
+                <h2 className="text-base font-bold text-ink">{tr('addUser')}</h2>
                 <button
                   onClick={() => setDrawerOpen(false)}
-                  className="p-2 rounded-lg text-[#1A2B4A]/60 hover:bg-[#F3F5F7]"
+                  className="p-2 rounded-xl text-muted hover:bg-surface"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -722,39 +722,39 @@ export function IamView() {
 
               <form onSubmit={(e) => void handleAddUser(e)} className="flex-1 p-6 space-y-5">
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-[#1A2B4A]">
-                    {tr('displayName')} <span className="text-[#FF7A00]">*</span>
+                  <label className="block text-xs font-medium text-ink">
+                    {tr('displayName')} <span className="text-brand">*</span>
                   </label>
                   <input
                     type="text"
                     required
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-slate-200 text-sm text-[#1A2B4A]"
+                    className="w-full h-10 px-3 rounded-xl border border-line text-sm text-ink"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-[#1A2B4A]">
-                    {tr('email')} <span className="text-[#FF7A00]">*</span>
+                  <label className="block text-xs font-medium text-ink">
+                    {tr('email')} <span className="text-brand">*</span>
                   </label>
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg border border-slate-200 text-sm text-[#1A2B4A]"
+                    className="w-full h-10 px-3 rounded-xl border border-line text-sm text-ink"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="block text-xs font-medium text-[#1A2B4A]">
+                  <label className="block text-xs font-medium text-ink">
                     {tr('role')}
                   </label>
                   <select
                     value={roleCode}
                     onChange={(e) => setRoleCode(e.target.value as RoleCode)}
-                    className="w-full h-10 px-3 rounded-lg border border-slate-200 bg-white text-sm text-[#1A2B4A]"
+                    className="w-full h-10 px-3 rounded-xl border border-line bg-canvas text-sm text-ink"
                   >
                     <option value="ADMIN">{tr('roleADMIN')}</option>
                     <option value="ACCOUNTANT">{tr('roleACCOUNTANT')}</option>
@@ -762,18 +762,18 @@ export function IamView() {
                   </select>
                 </div>
 
-                <div className="pt-6 border-t border-slate-200 flex items-center justify-end gap-3">
+                <div className="pt-6 border-t border-line flex items-center justify-end gap-3">
                   <button
                     type="button"
                     onClick={() => setDrawerOpen(false)}
-                    className="px-4 py-2 rounded-lg border border-slate-200 text-xs font-medium text-[#1A2B4A]"
+                    className="px-4 py-2 rounded-xl border border-line text-xs font-medium text-ink"
                   >
                     {tr('cancel')}
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="px-5 py-2 rounded-lg bg-[#FF7A00] hover:bg-[#e56e00] disabled:opacity-60 text-white text-xs font-semibold"
+                    className="px-5 py-2 rounded-xl bg-brand hover:bg-brand-hover disabled:opacity-60 text-white text-xs font-semibold"
                   >
                     {tr('save')}
                   </button>

@@ -133,6 +133,14 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
+const OPERATION_IDS: AppModule[] = ['dashboard', 'parties', 'items', 'documents', 'retail'];
+
+function initialsOf(name?: string | null): string {
+  if (!name) return 'K';
+  const parts = name.trim().split(/\s+/).slice(0, 2);
+  return parts.map((p) => p.charAt(0).toUpperCase()).join('') || 'K';
+}
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const {
     profile,
@@ -165,6 +173,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     );
   }, [role, can]);
 
+  const navGroups = useMemo(
+    () =>
+      [
+        {
+          id: 'ops',
+          label: tr('navGroupOperations'),
+          items: visibleNavItems.filter((i) => OPERATION_IDS.includes(i.id)),
+        },
+        {
+          id: 'admin',
+          label: tr('navGroupAdmin'),
+          items: visibleNavItems.filter((i) => !OPERATION_IDS.includes(i.id)),
+        },
+      ].filter((g) => g.items.length > 0),
+    [visibleNavItems, tr]
+  );
+
   const activeNav = NAV_ITEMS.find((n) => n.id === activeModule) ?? NAV_ITEMS[0];
 
   const getItemLabel = (item: NavItem): string => {
@@ -191,154 +216,177 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     setMobileMenuOpen(false);
   };
 
-  const BrandHeader = ({ collapsed }: { collapsed: boolean }) => (
-    <div
-      className={`h-16 flex items-center border-b border-slate-200/80 min-w-0 ${
-        collapsed ? 'px-3 justify-center' : 'px-4 justify-between gap-2'
-      }`}
-    >
-      {!collapsed &&
-        (systemSettings?.logoDataUrl ? (
-          <div className="flex items-center gap-2.5 min-w-0">
-            <img
-              src={systemSettings.logoDataUrl}
-              alt={companyDisplay}
-              referrerPolicy="no-referrer"
-              className="w-8 h-8 rounded-lg object-contain bg-white border border-slate-200 p-0.5 shrink-0"
-            />
-            <span className="text-sm font-bold tracking-tight text-[#1A2B4A] truncate">
-              {companyDisplay}
-            </span>
-          </div>
-        ) : (
-          <KlaroLogo size={30} wordmark={companyDisplay} />
-        ))}
+  const brandMark = (size: number) =>
+    systemSettings?.logoDataUrl ? (
+      <div className="flex items-center gap-2.5 min-w-0">
+        <img
+          src={systemSettings.logoDataUrl}
+          alt={companyDisplay}
+          referrerPolicy="no-referrer"
+          className="w-9 h-9 rounded-xl object-contain bg-white p-0.5 shrink-0"
+        />
+        <span className="text-sm font-extrabold tracking-tight text-white truncate">
+          {companyDisplay}
+        </span>
+      </div>
+    ) : (
+      <KlaroLogo size={size} wordmark={companyDisplay} tone="dark" />
+    );
 
-      <ActionTooltip
-        label={collapsed ? tr('expandSidebar') : tr('collapseSidebar')}
-        side={collapsed ? 'end' : 'bottom'}
-      >
-        <button
-          type="button"
-          onClick={() => setSidebarCollapsed((prev) => !prev)}
-          aria-label={collapsed ? tr('expandSidebar') : tr('collapseSidebar')}
-          className="hidden lg:inline-flex p-2 rounded-lg text-[#1A2B4A]/65 hover:text-[#1A2B4A] hover:bg-white hover:scale-105 active:scale-95 transition-all duration-150 shrink-0"
-        >
-          {collapsed ? (
-            <PanelLeftOpen className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />
-          ) : (
-            <PanelLeftClose className={`w-4 h-4 ${lang === 'ar' ? 'rotate-180' : ''}`} />
-          )}
-        </button>
-      </ActionTooltip>
+  const renderNavButtons = (collapsed: boolean) =>
+    navGroups.map((group) => (
+      <div key={group.id} className="space-y-1">
+        {!collapsed ? (
+          <p className="px-3.5 pb-1 pt-3 text-xs font-semibold tracking-wide text-night-muted">
+            {group.label}
+          </p>
+        ) : (
+          <div className="mx-3 my-2 h-px bg-night-line" aria-hidden="true" />
+        )}
+        {group.items.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeModule === item.id;
+          const showSubtitle = !collapsed && !isEmployee && Boolean(item.subtitleKey);
+          const itemLabel = getItemLabel(item);
+
+          const buttonNode = (
+            <button
+              type="button"
+              onClick={() => handleSelectModule(item.id)}
+              aria-current={isActive ? 'page' : undefined}
+              className={`group w-full flex items-center rounded-2xl text-start transition-colors duration-150 ${
+                collapsed ? 'justify-center px-2.5 py-3' : 'gap-3 px-3.5 py-2.5'
+              } ${
+                isActive
+                  ? 'bg-brand text-white shadow-[0_10px_24px_-10px_rgba(109,61,242,0.9)]'
+                  : 'text-night-text hover:bg-night-3/70 hover:text-white'
+              }`}
+            >
+              <Icon
+                className={`w-[18px] h-[18px] shrink-0 ${
+                  isActive ? 'text-white' : 'text-night-muted group-hover:text-brand-glow'
+                }`}
+              />
+              {!collapsed && (
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-semibold leading-snug truncate">
+                    {itemLabel}
+                  </span>
+                  {showSubtitle && item.subtitleKey && (
+                    <span
+                      className={`block text-xs leading-tight mt-0.5 truncate ${
+                        isActive ? 'text-white/85' : 'text-night-muted'
+                      }`}
+                    >
+                      {tr(item.subtitleKey)}
+                    </span>
+                  )}
+                </span>
+              )}
+            </button>
+          );
+
+          return (
+            <div key={item.id} className={collapsed ? 'flex justify-center' : undefined}>
+              <ActionTooltip label={itemLabel} side="end" disabled={!collapsed}>
+                {buttonNode}
+              </ActionTooltip>
+            </div>
+          );
+        })}
+      </div>
+    ));
+
+  const renderUserCard = (collapsed: boolean) => (
+    <div className="p-3">
+      {collapsed ? (
+        <div className="flex flex-col items-center gap-2">
+          <span
+            className="w-10 h-10 rounded-full bg-brand text-white text-sm font-bold flex items-center justify-center"
+            aria-hidden="true"
+          >
+            {initialsOf(profile?.displayName)}
+          </span>
+          <ActionTooltip label={tr('signOut')} side="end">
+            <button
+              onClick={() => void signOut()}
+              aria-label={tr('signOut')}
+              className="w-10 h-10 rounded-xl text-night-text hover:bg-night-3 hover:text-white flex items-center justify-center transition-colors"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </ActionTooltip>
+        </div>
+      ) : (
+        <div className="rounded-[20px] p-4 border border-night-line bg-gradient-to-br from-night-3 to-night-2 space-y-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <span
+              className="w-10 h-10 rounded-full bg-brand text-white text-sm font-bold flex items-center justify-center shrink-0"
+              aria-hidden="true"
+            >
+              {initialsOf(profile?.displayName)}
+            </span>
+            <div className="min-w-0">
+              <p className="text-sm font-bold text-white truncate">{profile?.displayName}</p>
+              <p className="text-xs text-night-muted truncate">{roleLabel}</p>
+            </div>
+          </div>
+          <p className="text-xs text-night-muted truncate">{profile?.email}</p>
+          <button
+            onClick={() => void signOut()}
+            className="w-full h-10 inline-flex items-center justify-center gap-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-semibold transition-colors whitespace-nowrap"
+          >
+            <LogOut className="w-4 h-4 shrink-0" />
+            <span>{tr('signOut')}</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 
-  const renderNavButtons = (collapsed: boolean) =>
-    visibleNavItems.map((item) => {
-      const Icon = item.icon;
-      const isActive = activeModule === item.id;
-      const showSubtitle = !collapsed && !isEmployee && Boolean(item.subtitleKey);
-      const itemLabel = getItemLabel(item);
-
-      const buttonNode = (
-        <motion.button
-          whileHover={collapsed ? undefined : { x: lang === 'ar' ? -2 : 2 }}
-          whileTap={{ scale: 0.98 }}
-          transition={{ duration: 0.14 }}
-          onClick={() => handleSelectModule(item.id)}
-          className={`group w-full flex items-start rounded-lg text-start transition-colors duration-200 ${
-            collapsed ? 'justify-center px-2.5 py-2.5' : 'gap-3 px-3.5 py-2.5'
-          } ${
-            isActive
-              ? 'bg-[#1A2B4A] text-white shadow-sm'
-              : 'text-[#1A2B4A]/80 hover:bg-white hover:text-[#1A2B4A]'
-          }`}
-        >
-          <Icon
-            className={`w-4 h-4 shrink-0 transition-colors duration-200 ${
-              collapsed ? 'mt-0' : 'mt-0.5'
-            } ${
-              isActive
-                ? 'text-[#FF7A00]'
-                : 'text-[#1A2B4A]/60 group-hover:text-[#FF7A00]'
-            }`}
-          />
-          {!collapsed && (
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-semibold leading-snug truncate">
-                {itemLabel}
-              </span>
-              {showSubtitle && item.subtitleKey && (
-                <span
-                  className={`block text-[11px] leading-tight mt-0.5 truncate transition-colors duration-200 ${
-                    isActive
-                      ? 'text-white/75'
-                      : 'text-[#1A2B4A]/55 group-hover:text-[#1A2B4A]/75'
-                  }`}
-                >
-                  {tr(item.subtitleKey)}
-                </span>
-              )}
-            </span>
-          )}
-        </motion.button>
-      );
-
-      return (
-        <div key={item.id} className={collapsed ? 'flex justify-center' : undefined}>
-          <ActionTooltip label={itemLabel} side="end" disabled={!collapsed}>
-            {buttonNode}
-          </ActionTooltip>
-        </div>
-      );
-    });
-
   return (
-    <div className="min-h-screen bg-white text-[#1A2B4A] flex">
-      {/* Desktop Sidebar (Expanded 272px / Collapsed 76px, Fog #F3F5F7) */}
+    <div className="min-h-screen lg:h-screen lg:overflow-hidden bg-night text-ink flex">
+      {/* Desktop Sidebar — dark violet (Expanded 288px / Collapsed 84px) */}
       <aside
-        className={`hidden lg:flex lg:flex-col lg:shrink-0 bg-[#F3F5F7] border-e border-slate-200/90 transition-all duration-200 ${
-          sidebarCollapsed ? 'lg:w-[76px]' : 'lg:w-[272px]'
+        className={`hidden lg:flex lg:flex-col lg:shrink-0 lg:h-screen bg-night transition-[width] duration-200 ${
+          sidebarCollapsed ? 'lg:w-[84px]' : 'lg:w-[288px]'
         }`}
       >
-        <BrandHeader collapsed={sidebarCollapsed} />
+        <div
+          className={`h-[72px] flex items-center min-w-0 ${
+            sidebarCollapsed ? 'px-3 justify-center' : 'px-5 justify-between gap-2'
+          }`}
+        >
+          {!sidebarCollapsed && brandMark(32)}
+          <ActionTooltip
+            label={sidebarCollapsed ? tr('expandSidebar') : tr('collapseSidebar')}
+            side={sidebarCollapsed ? 'end' : 'bottom'}
+          >
+            <button
+              type="button"
+              onClick={() => setSidebarCollapsed((prev) => !prev)}
+              aria-label={sidebarCollapsed ? tr('expandSidebar') : tr('collapseSidebar')}
+              className="inline-flex w-10 h-10 items-center justify-center rounded-xl text-night-text hover:text-white hover:bg-night-3 transition-colors shrink-0"
+            >
+              {sidebarCollapsed ? (
+                <PanelLeftOpen className={`w-[18px] h-[18px] ${lang === 'ar' ? 'rotate-180' : ''}`} />
+              ) : (
+                <PanelLeftClose className={`w-[18px] h-[18px] ${lang === 'ar' ? 'rotate-180' : ''}`} />
+              )}
+            </button>
+          </ActionTooltip>
+        </div>
 
         <nav
-          className={`flex-1 px-3 py-4 space-y-1 ${
+          aria-label={tr('brandName')}
+          className={`flex-1 px-3 pb-3 space-y-2 klaro-scroll-dark ${
             sidebarCollapsed ? 'overflow-visible' : 'overflow-y-auto'
           }`}
         >
           {renderNavButtons(sidebarCollapsed)}
         </nav>
 
-        {/* Signed-in Identity Summary */}
-        <div className="p-3 border-t border-slate-200/80 space-y-3">
-          {!sidebarCollapsed && (
-            <div className="px-2">
-              <p className="text-sm font-semibold text-[#1A2B4A] truncate">
-                {profile?.displayName}
-              </p>
-              <p className="text-xs text-[#1A2B4A]/65 truncate mt-0.5">
-                {roleLabel} · {profile?.email}
-              </p>
-            </div>
-          )}
-          <div className={sidebarCollapsed ? 'flex justify-center' : undefined}>
-            <ActionTooltip label={tr('signOut')} side="end" disabled={!sidebarCollapsed}>
-              <button
-                onClick={() => void signOut()}
-                aria-label={tr('signOut')}
-                className={`flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-[#1A2B4A] hover:border-[#1A2B4A]/40 hover:bg-slate-50 hover:scale-105 active:scale-95 transition-all duration-150 whitespace-nowrap ${
-                  sidebarCollapsed ? 'w-10 h-10 p-0' : 'w-full px-3 py-2'
-                }`}
-              >
-                <LogOut className="w-3.5 h-3.5 shrink-0" />
-                {!sidebarCollapsed && <span>{tr('signOut')}</span>}
-              </button>
-            </ActionTooltip>
-          </div>
-        </div>
+        {renderUserCard(sidebarCollapsed)}
       </aside>
 
       {/* Mobile Drawer Navigation */}
@@ -349,82 +397,74 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.16 }}
-            className="fixed inset-0 z-50 lg:hidden bg-[#1A2B4A]/35 flex"
+            className="fixed inset-0 z-50 lg:hidden bg-night/60 backdrop-blur-sm flex"
           >
             <motion.aside
-              initial={{ x: lang === 'ar' ? 272 : -272 }}
+              initial={{ x: lang === 'ar' ? 300 : -300 }}
               animate={{ x: 0 }}
-              exit={{ x: lang === 'ar' ? 272 : -272 }}
+              exit={{ x: lang === 'ar' ? 300 : -300 }}
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-              className="w-[272px] bg-[#F3F5F7] h-full flex flex-col border-e border-slate-200"
+              className="w-[288px] bg-night h-full flex flex-col"
             >
-              <div className="h-16 px-5 flex items-center justify-between border-b border-slate-200">
-                <KlaroLogo size={28} wordmark={companyDisplay} />
+              <div className="h-[72px] px-5 flex items-center justify-between">
+                {brandMark(30)}
                 <button
                   onClick={() => setMobileMenuOpen(false)}
                   aria-label={tr('close')}
-                  className="p-2 rounded-lg text-[#1A2B4A]/70 hover:bg-white transition-colors"
+                  className="w-10 h-10 inline-flex items-center justify-center rounded-xl text-night-text hover:bg-night-3 hover:text-white transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
-              <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+              <nav className="flex-1 px-3 pb-3 space-y-2 overflow-y-auto klaro-scroll-dark">
                 {renderNavButtons(false)}
               </nav>
-              <div className="p-4 border-t border-slate-200">
-                <button
-                  onClick={() => void signOut()}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-slate-200 bg-white text-xs font-medium text-[#1A2B4A] hover:scale-105 active:scale-95 transition-all"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span>{tr('signOut')}</span>
-                </button>
-              </div>
+              {renderUserCard(false)}
             </motion.aside>
             <div className="flex-1" onClick={() => setMobileMenuOpen(false)} />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Bar (Contextual Breadcrumb + Language Switcher) */}
-        <header className="h-16 px-4 sm:px-8 border-b border-slate-200 bg-white flex items-center justify-between gap-8 shrink-0">
+      {/* Main Content Panel — light canvas with a large rounded edge on desktop */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-0 bg-canvas lg:rounded-s-[32px] lg:h-screen">
+        <header className="h-[72px] px-4 sm:px-8 flex items-center justify-between gap-6 shrink-0">
           <div className="flex items-center gap-3 min-w-0">
             <button
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open Navigation"
-              className="lg:hidden p-2 rounded-lg border border-slate-200 text-[#1A2B4A] hover:bg-[#F3F5F7] transition-colors"
+              className="lg:hidden w-11 h-11 inline-flex items-center justify-center rounded-xl bg-surface border border-line text-ink hover:bg-brand-soft transition-colors"
             >
-              <Menu className="w-4 h-4" />
+              <Menu className="w-5 h-5" />
             </button>
-            <div className="flex items-center gap-2 text-sm min-w-0">
-              <span className="font-semibold text-[#1A2B4A]/55 whitespace-nowrap truncate max-w-[160px]">
+            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm min-w-0">
+              <span className="text-muted whitespace-nowrap truncate max-w-[180px]">
                 {companyDisplay}
               </span>
-              <span className="text-[#1A2B4A]/35" aria-hidden="true">
+              <span className="text-line-strong" aria-hidden="true">
                 /
               </span>
               <span
                 className={`truncate ${
                   activeModule === 'parties' && subRoute === 'new'
-                    ? 'font-medium text-[#1A2B4A]/65'
-                    : 'font-semibold text-[#1A2B4A]'
+                    ? 'text-muted'
+                    : 'font-bold text-ink'
                 }`}
+                aria-current={subRoute === 'new' ? undefined : 'page'}
               >
                 {getItemLabel(activeNav)}
               </span>
               {activeModule === 'parties' && subRoute === 'new' && (
                 <>
-                  <span className="text-[#1A2B4A]/35" aria-hidden="true">
+                  <span className="text-line-strong" aria-hidden="true">
                     /
                   </span>
-                  <span className="font-semibold text-[#1A2B4A] truncate">
+                  <span className="font-bold text-ink truncate" aria-current="page">
                     {tr('addNewPartyTitle')}
                   </span>
                 </>
               )}
-            </div>
+            </nav>
           </div>
 
           <div className="flex items-center gap-3 shrink-0">
@@ -434,33 +474,45 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               <button
                 onClick={toggleLang}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg border border-slate-200 bg-[#F3F5F7] hover:bg-slate-200/70 hover:scale-105 active:scale-95 text-xs font-medium text-[#1A2B4A] transition-all duration-150 whitespace-nowrap shrink-0"
+                className="inline-flex items-center gap-2 h-11 px-4 rounded-2xl border border-line bg-surface hover:bg-brand-soft text-sm font-semibold text-ink transition-colors whitespace-nowrap shrink-0 shadow-[var(--shadow-card)]"
               >
-                <Globe className="w-3.5 h-3.5 text-[#1A2B4A]" />
+                <Globe className="w-4 h-4 text-brand" />
                 <span>{lang === 'en' ? 'العربية' : 'English'}</span>
               </button>
             </ActionTooltip>
+            <span
+              className="hidden sm:flex w-11 h-11 rounded-full bg-night text-white text-sm font-bold items-center justify-center"
+              title={profile?.displayName ?? ''}
+              aria-hidden="true"
+            >
+              {initialsOf(profile?.displayName)}
+            </span>
           </div>
         </header>
 
-        {/* Global Error Banner */}
         {errorBanner && (
-          <div className="mx-4 sm:mx-8 mt-4 px-4 py-3 rounded-lg border border-red-200 bg-red-50 text-red-900 text-xs flex items-center justify-between gap-4">
+          <div
+            role="alert"
+            className="mx-4 sm:mx-8 mb-2 px-4 py-3 rounded-2xl border border-danger/30 bg-red-50 text-red-900 text-sm flex items-center justify-between gap-4"
+          >
             <span className="truncate">{errorBanner}</span>
-            <button onClick={clearErrorBanner} className="font-medium underline shrink-0">
+            <button onClick={clearErrorBanner} className="font-semibold underline shrink-0">
               {tr('close')}
             </button>
           </div>
         )}
 
-        {/* Viewport Body */}
-        <main className="flex-1 px-4 sm:px-8 py-6 max-w-[1400px] w-full mx-auto">
-          {children}
+        <main className="flex-1 px-4 sm:px-8 pb-10 pt-2 w-full min-h-0 overflow-y-auto">
+          <div className="max-w-[1440px] mx-auto">{children}</div>
         </main>
       </div>
 
       {/* Toast Stack */}
-      <div className="fixed bottom-5 end-5 z-50 flex flex-col gap-2 max-w-sm">
+      <div
+        className="fixed bottom-5 end-5 z-50 flex flex-col gap-2 max-w-sm"
+        role="status"
+        aria-live="polite"
+      >
         <AnimatePresence>
           {toasts.map((toast) => (
             <motion.div
@@ -469,20 +521,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 6 }}
               transition={{ duration: 0.16 }}
-              className={`px-4 py-3 rounded-lg border text-sm font-medium flex items-center justify-between gap-4 bg-white shadow-sm ${
+              className={`px-4 py-3 rounded-2xl border text-sm font-medium flex items-center justify-between gap-4 bg-surface shadow-[var(--shadow-lift)] ${
                 toast.type === 'error'
-                  ? 'border-red-300 text-red-800'
+                  ? 'border-danger/40 text-red-800'
                   : toast.type === 'success'
-                  ? 'border-[#2ECC71] text-[#1A2B4A]'
-                  : 'border-slate-300 text-[#1A2B4A]'
+                  ? 'border-success text-ink'
+                  : 'border-line-strong text-ink'
               }`}
             >
               <span>{toast.text}</span>
               <button
                 onClick={() => dismissToast(toast.id)}
-                className="text-xs text-[#1A2B4A]/50 hover:text-[#1A2B4A]"
+                aria-label={tr('close')}
+                className="text-muted hover:text-ink"
               >
-                <X className="w-3.5 h-3.5" />
+                <X className="w-4 h-4" />
               </button>
             </motion.div>
           ))}
