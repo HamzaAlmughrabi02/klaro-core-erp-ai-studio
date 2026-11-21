@@ -178,7 +178,7 @@ export function ConfigurationView() {
 
       {/* Target Entity Filter + Schema Summary */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface border border-line self-start">
+        <div className="klaro-tabs self-start">
           {(['ALL', 'PARTY', 'ITEM', 'DOCUMENT'] as const).map((ent) => {
             const active = entityFilter === ent;
             const label = ent === 'ALL' ? tr('all') : tr(`entity${ent}`);
@@ -186,9 +186,9 @@ export function ConfigurationView() {
               <button
                 key={ent}
                 onClick={() => setEntityFilter(ent)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
+                className={`px-3.5 py-2 rounded-xl text-sm font-semibold transition-colors whitespace-nowrap shrink-0 ${
                   active
-                    ? 'bg-canvas text-ink border border-line/80'
+                    ? 'bg-surface text-ink shadow-[var(--shadow-card)]'
                     : 'text-muted hover:text-ink'
                 }`}
               >
@@ -208,7 +208,7 @@ export function ConfigurationView() {
       </div>
 
       {/* Custom Fields Table */}
-      <div className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+      <div className="rounded-[20px] border border-line bg-surface overflow-hidden">
         {filteredFields.length === 0 ? (
           <EmptyState
             variant="custom"
@@ -221,21 +221,21 @@ export function ConfigurationView() {
           <div className="overflow-x-auto">
             <table className="w-full text-start border-collapse">
               <thead>
-                <tr className="bg-canvas border-b border-line text-xs font-semibold text-ink/70">
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('targetEntity')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('fieldName')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('fieldType')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('isRequiredField')}</th>
-                  <th className="py-3 px-4 text-end whitespace-nowrap">{tr('actions')}</th>
+                <tr className="bg-canvas border-b border-line text-xs font-semibold text-muted">
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('targetEntity')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('fieldName')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('fieldType')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('isRequiredField')}</th>
+                  <th className="py-3.5 px-5 text-end whitespace-nowrap">{tr('actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line text-sm">
                 {filteredFields.map((cf) => (
                   <tr key={cf.id} className="h-12 hover:bg-surface transition-colors duration-200 cursor-pointer">
-                    <td className="py-2.5 px-4 text-xs font-semibold text-ink whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs font-semibold text-ink whitespace-nowrap">
                       {tr(`entity${cf.entityType}`)}
                     </td>
-                    <td className="py-2.5 px-4 whitespace-nowrap">
+                    <td className="py-3 px-5 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-ink">
                           {getFieldLabel(cf, lang)}
@@ -246,11 +246,11 @@ export function ConfigurationView() {
                         </span>
                       </div>
                     </td>
-                    <td className="py-2.5 px-4 text-xs text-ink/80 whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs text-ink/80 whitespace-nowrap">
                       {tr(`field${cf.fieldType}`)}
                       {cf.options && cf.options.length > 0 ? ` (${cf.options.join(', ')})` : ''}
                     </td>
-                    <td className="py-2.5 px-4 text-xs whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs whitespace-nowrap">
                       <span
                         className={
                           cf.isRequired ? 'text-brand font-semibold' : 'text-muted'
@@ -259,7 +259,7 @@ export function ConfigurationView() {
                         {cf.isRequired ? tr('required') : tr('optional')}
                       </span>
                     </td>
-                    <td className="py-2.5 px-4 text-end whitespace-nowrap">
+                    <td className="py-3 px-5 text-end whitespace-nowrap">
                       <div className="inline-flex items-center justify-end gap-3">
                         <ActionTooltip label={tr('fieldStatus')} side="top">
                           <button

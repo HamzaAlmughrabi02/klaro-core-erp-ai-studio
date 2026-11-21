@@ -87,7 +87,7 @@ export function WorkflowsView() {
       </div>
 
       {/* Pending Approvals Queue */}
-      <section className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+      <section className="rounded-[20px] border border-line bg-surface overflow-hidden">
         <div className="px-6 py-4 bg-surface border-b border-line flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-brand" />
@@ -111,12 +111,12 @@ export function WorkflowsView() {
             <table className="w-full text-start border-collapse">
               <thead>
                 <tr className="bg-surface/70 border-b border-line text-xs font-semibold text-ink/70">
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('docNumber')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('docType')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('docPARTY')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('createdBy')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('docLines')}</th>
-                  <th className="py-3 px-4 text-end whitespace-nowrap">{tr('actions')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('docNumber')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('docType')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('docPARTY')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('createdBy')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('docLines')}</th>
+                  <th className="py-3.5 px-5 text-end whitespace-nowrap">{tr('actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line text-sm">
@@ -125,22 +125,22 @@ export function WorkflowsView() {
                     key={docItem.id}
                     className="h-12 hover:bg-surface transition-colors duration-200 cursor-pointer"
                   >
-                    <td className="py-2.5 px-4 font-mono-tabular text-xs font-semibold text-ink whitespace-nowrap">
+                    <td className="py-3 px-5 font-mono-tabular text-xs font-semibold text-ink whitespace-nowrap">
                       {docItem.docNumber}
                     </td>
-                    <td className="py-2.5 px-4 text-xs text-ink/80 whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs text-ink/80 whitespace-nowrap">
                       {tr(`docType${docItem.docType}`)}
                     </td>
-                    <td className="py-2.5 px-4 font-medium text-ink whitespace-nowrap">
+                    <td className="py-3 px-5 font-medium text-ink whitespace-nowrap">
                       {docItem.partyName}
                     </td>
-                    <td className="py-2.5 px-4 text-xs text-ink/70 whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs text-ink/70 whitespace-nowrap">
                       {docItem.createdByName}
                     </td>
-                    <td className="py-2.5 px-4 text-xs font-mono-tabular text-ink/75 whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs font-mono-tabular text-ink/75 whitespace-nowrap">
                       {docItem.lines.length}
                     </td>
-                    <td className="py-2.5 px-4 text-end whitespace-nowrap">
+                    <td className="py-3 px-5 text-end whitespace-nowrap">
                       <div className="inline-flex items-center justify-end gap-2">
                         <ActionTooltip label={tr('approveDocument')} side="top">
                           <button
@@ -176,7 +176,7 @@ export function WorkflowsView() {
 
       {/* Processed Decisions */}
       {processedDocs.length > 0 && (
-        <section className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+        <section className="rounded-[20px] border border-line bg-surface overflow-hidden">
           <div className="px-6 py-4 bg-surface border-b border-line flex items-center justify-between">
             <h2 className="text-sm font-bold text-ink">
               {tr('workflowRecentDecisions')}
@@ -190,26 +190,26 @@ export function WorkflowsView() {
             <table className="w-full text-start border-collapse">
               <thead>
                 <tr className="bg-surface/70 border-b border-line text-xs font-semibold text-ink/70">
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('docNumber')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('docType')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('docPARTY')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('status')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('auditActor')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('docNumber')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('docType')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('docPARTY')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('status')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('auditActor')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line text-sm">
                 {processedDocs.slice(0, 10).map((docItem) => (
                   <tr key={docItem.id} className="h-11 hover:bg-surface transition-colors">
-                    <td className="py-2.5 px-4 font-mono-tabular text-xs font-semibold text-ink whitespace-nowrap">
+                    <td className="py-3 px-5 font-mono-tabular text-xs font-semibold text-ink whitespace-nowrap">
                       {docItem.docNumber}
                     </td>
-                    <td className="py-2.5 px-4 text-xs text-ink/80 whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs text-ink/80 whitespace-nowrap">
                       {tr(`docType${docItem.docType}`)}
                     </td>
-                    <td className="py-2.5 px-4 font-medium text-ink whitespace-nowrap">
+                    <td className="py-3 px-5 font-medium text-ink whitespace-nowrap">
                       {docItem.partyName}
                     </td>
-                    <td className="py-2.5 px-4 text-xs whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs whitespace-nowrap">
                       <span
                         className={`inline-flex items-center gap-1 font-semibold ${
                           docItem.status === 'APPROVED' ? 'text-success' : 'text-red-600'
@@ -223,7 +223,7 @@ export function WorkflowsView() {
                         <span>{tr(`docStatus${docItem.status}`)}</span>
                       </span>
                     </td>
-                    <td className="py-2.5 px-4 text-xs text-ink/70 whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs text-ink/70 whitespace-nowrap">
                       {docItem.status === 'APPROVED'
                         ? docItem.approvedByName || 'Admin'
                         : docItem.rejectedByName || 'Admin'}

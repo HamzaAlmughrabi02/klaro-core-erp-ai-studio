@@ -102,7 +102,7 @@ export function SystemSettingsView() {
 
       <form
         onSubmit={(e) => void handleSubmit(e)}
-        className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden"
+        className="rounded-[20px] border border-line bg-surface overflow-hidden"
       >
         <div className="p-6 space-y-6">
           {/* Corporate Logo Preview & Upload */}

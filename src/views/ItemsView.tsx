@@ -6,9 +6,10 @@
  */
 
 import React, { useMemo, useState } from 'react';
-import { Pencil, Plus, Search, Trash2, X } from 'lucide-react';
+import { Pencil, Plus, Search, Trash2, X, Package } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { createItem, deleteItem, updateItem } from '../api/erpService.ts';
+import { StatusChip } from '../components/ui.tsx';
 import { ActionTooltip } from '../components/ActionTooltip.tsx';
 import { DynamicFieldsRenderer } from '../components/DynamicFieldsRenderer.tsx';
 import { EmptyState } from '../components/EmptyStateIllustration.tsx';
@@ -136,7 +137,7 @@ export function ItemsView() {
 
       {/* Filter & Search Toolbar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface border border-line self-start">
+        <div className="klaro-tabs self-start">
           {(['ALL', 'PRODUCT', 'SERVICE'] as const).map((type) => {
             const active = typeFilter === type;
             const label = type === 'ALL' ? tr('all') : tr(`type${type}`);
@@ -144,9 +145,9 @@ export function ItemsView() {
               <button
                 key={type}
                 onClick={() => setTypeFilter(type)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
+                className={`px-3.5 py-2 rounded-xl text-sm font-semibold transition-colors whitespace-nowrap shrink-0 ${
                   active
-                    ? 'bg-canvas text-ink border border-line/80'
+                    ? 'bg-surface text-ink shadow-[var(--shadow-card)]'
                     : 'text-muted hover:text-ink'
                 }`}
               >
@@ -163,13 +164,13 @@ export function ItemsView() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={tr('searchPlaceholder')}
-            className="w-full h-10 ps-9 pe-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
+            className="w-full h-11 ps-10 pe-4 rounded-2xl border border-line bg-surface text-sm text-ink shadow-[var(--shadow-card)] focus:outline-none focus:border-brand"
           />
         </div>
       </div>
 
       {/* Table */}
-      <div className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+      <div className="rounded-[20px] border border-line bg-surface overflow-hidden">
         {dataLoading && items.length === 0 ? (
           <div className="p-6 space-y-3">
             {[1, 2, 3, 4].map((r) => (
@@ -188,17 +189,17 @@ export function ItemsView() {
           <div className="overflow-x-auto">
             <table className="w-full text-start border-collapse">
               <thead>
-                <tr className="bg-canvas border-b border-line text-xs font-semibold text-ink/70">
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('itemCode')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('itemName')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('itemType')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('unit')}</th>
+                <tr className="bg-canvas border-b border-line text-xs font-semibold text-muted">
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('itemCode')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('itemName')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('itemType')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('unit')}</th>
                   {itemFields.map((cf) => (
-                    <th key={cf.id} className="py-3 px-4 text-start whitespace-nowrap">
+                    <th key={cf.id} className="py-3.5 px-5 text-start whitespace-nowrap">
                       {getFieldLabel(cf, lang)}
                     </th>
                   ))}
-                  <th className="py-3 px-4 text-end whitespace-nowrap">{tr('actions')}</th>
+                  <th className="py-3.5 px-5 text-end whitespace-nowrap">{tr('actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line text-sm">
@@ -208,20 +209,23 @@ export function ItemsView() {
                     onClick={() => {
                       if (can('entities:write')) openEditDrawer(item);
                     }}
-                    className={`h-11 hover:bg-surface transition-colors duration-200 ${
+                    className={`h-14 hover:bg-brand-soft/50 transition-colors duration-150 ${
                       can('entities:write') ? 'cursor-pointer' : ''
                     }`}
                   >
-                    <td className="py-2.5 px-4 font-mono-tabular text-xs font-semibold text-ink whitespace-nowrap">
+                    <td className="py-3 px-5 font-mono-tabular text-xs font-semibold text-ink whitespace-nowrap">
                       {item.code}
                     </td>
-                    <td className="py-2.5 px-4 font-semibold text-ink whitespace-nowrap">
-                      {item.name}
+                    <td className="py-3 px-5 whitespace-nowrap">
+                      <span className="flex items-center gap-3">
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-soft text-brand"><Package className="h-5 w-5" /></span>
+                        <span className="font-bold text-ink">{item.name}</span>
+                      </span>
                     </td>
-                    <td className="py-2.5 px-4 text-ink/80 whitespace-nowrap">
-                      {tr(`type${item.itemType}`)}
+                    <td className="py-3 px-5 whitespace-nowrap">
+                      <StatusChip tone={item.itemType === 'PRODUCT' ? 'brand' : 'neutral'}>{tr(`type${item.itemType}`)}</StatusChip>
                     </td>
-                    <td className="py-2.5 px-4 text-xs text-ink/75 whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs text-ink/75 whitespace-nowrap">
                       {item.unit}
                     </td>
                     {itemFields.map((cf) => {
@@ -229,7 +233,7 @@ export function ItemsView() {
                       return (
                         <td
                           key={cf.id}
-                          className="py-2.5 px-4 text-xs text-ink/80 whitespace-nowrap"
+                          className="py-3 px-5 text-xs text-ink/80 whitespace-nowrap"
                         >
                           {val === undefined || val === ''
                             ? '—'
@@ -241,7 +245,7 @@ export function ItemsView() {
                         </td>
                       );
                     })}
-                    <td className="py-2.5 px-4 text-end whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                    <td className="py-3 px-5 text-end whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                       <div className="inline-flex items-center justify-end gap-2">
                         {can('entities:write') && (
                           <ActionTooltip label={tr('editItem')} side="top">

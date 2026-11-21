@@ -173,7 +173,7 @@ export function AddPartyView() {
       <form
         noValidate
         onSubmit={(e) => void handleSubmit(e)}
-        className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden"
+        className="rounded-[20px] border border-line bg-surface overflow-hidden"
       >
         {/* Base Abstract Party Section */}
         <div className="px-6 py-4 bg-surface border-b border-line flex items-center justify-between">

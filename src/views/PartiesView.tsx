@@ -13,6 +13,7 @@ import { createParty, deleteParty, updateParty } from '../api/erpService.ts';
 import { ActionTooltip } from '../components/ActionTooltip.tsx';
 import { DynamicFieldsRenderer } from '../components/DynamicFieldsRenderer.tsx';
 import { EmptyState } from '../components/EmptyStateIllustration.tsx';
+import { Avatar, StatusChip } from '../components/ui.tsx';
 import { InfoTooltip } from '../components/InfoTooltip.tsx';
 import { useErp } from '../context/ErpContext.tsx';
 import {
@@ -157,7 +158,7 @@ export function PartiesView() {
       {/* Filter & Search Toolbar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Segmented Type Filter */}
-        <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface border border-line self-start">
+        <div className="klaro-tabs self-start">
           {(['ALL', 'CLIENT', 'SUPPLIER', 'EMPLOYEE'] as const).map((type) => {
             const active = typeFilter === type;
             const label = type === 'ALL' ? tr('all') : tr(`type${type}`);
@@ -165,9 +166,9 @@ export function PartiesView() {
               <button
                 key={type}
                 onClick={() => setTypeFilter(type)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
+                className={`px-3.5 py-2 rounded-xl text-sm font-semibold transition-colors whitespace-nowrap shrink-0 ${
                   active
-                    ? 'bg-canvas text-ink border border-line/80'
+                    ? 'bg-surface text-ink shadow-[var(--shadow-card)]'
                     : 'text-muted hover:text-ink'
                 }`}
               >
@@ -185,13 +186,13 @@ export function PartiesView() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={tr('searchPlaceholder')}
-            className="w-full h-10 ps-9 pe-3 rounded-xl border border-line bg-canvas text-sm text-ink focus:outline-none focus:border-ink"
+            className="w-full h-11 ps-10 pe-4 rounded-2xl border border-line bg-surface text-sm text-ink shadow-[var(--shadow-card)] focus:outline-none focus:border-brand"
           />
         </div>
       </div>
 
       {/* High-Density Single-Elevation Data Grid */}
-      <div className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+      <div className="rounded-[20px] border border-line bg-surface overflow-hidden">
         {dataLoading && parties.length === 0 ? (
           <div className="p-6 space-y-3">
             {[1, 2, 3, 4].map((r) => (
@@ -210,18 +211,18 @@ export function PartiesView() {
           <div className="overflow-x-auto">
             <table className="w-full text-start border-collapse">
               <thead>
-                <tr className="bg-canvas border-b border-line text-xs font-semibold text-ink/70">
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('partyName')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('partyType')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('contactStatus')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('email')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('phone')}</th>
+                <tr className="bg-canvas border-b border-line text-xs font-semibold text-muted">
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('partyName')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('partyType')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('contactStatus')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('email')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('phone')}</th>
                   {partyFields.map((cf) => (
-                    <th key={cf.id} className="py-3 px-4 text-start whitespace-nowrap">
+                    <th key={cf.id} className="py-3.5 px-5 text-start whitespace-nowrap">
                       {getFieldLabel(cf, lang)}
                     </th>
                   ))}
-                  <th className="py-3 px-4 text-end whitespace-nowrap">{tr('actions')}</th>
+                  <th className="py-3.5 px-5 text-end whitespace-nowrap">{tr('actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line text-sm">
@@ -231,33 +232,26 @@ export function PartiesView() {
                     onClick={() => {
                       if (can('entities:write')) openEditDrawer(party);
                     }}
-                    className={`h-11 hover:bg-surface transition-colors duration-200 ${
+                    className={`h-14 hover:bg-brand-soft/50 transition-colors duration-150 ${
                       can('entities:write') ? 'cursor-pointer' : ''
                     }`}
                   >
-                    <td className="py-2.5 px-4 font-semibold text-ink whitespace-nowrap">
-                      {party.name}
+                    <td className="py-3 px-5 whitespace-nowrap">
+                      <div className="flex items-center gap-3">
+                        <Avatar name={party.name} size={36} />
+                        <span className="font-bold text-ink">{party.name}</span>
+                      </div>
                     </td>
-                    <td className="py-2.5 px-4 text-ink/80 whitespace-nowrap">
+                    <td className="py-3 px-5 text-ink/80 whitespace-nowrap">
                       {tr(`type${party.partyType}`)}
                     </td>
-                    <td className="py-2.5 px-4 whitespace-nowrap">
-                      <span
-                        className={`text-xs font-semibold ${
-                          party.contactStatus === 'ACTIVE'
-                            ? 'text-success'
-                            : party.contactStatus === 'PENDING'
-                            ? 'text-brand'
-                            : 'text-muted'
-                        }`}
-                      >
-                        {tr(`status${party.contactStatus}`)}
-                      </span>
+                    <td className="py-3 px-5 whitespace-nowrap">
+                      <StatusChip tone={party.contactStatus === 'ACTIVE' ? 'success' : party.contactStatus === 'PENDING' ? 'warning' : 'neutral'}>{tr(`status${party.contactStatus}`)}</StatusChip>
                     </td>
-                    <td className="py-2.5 px-4 text-xs text-ink/70 whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs text-ink/70 whitespace-nowrap">
                       {party.email || '—'}
                     </td>
-                    <td className="py-2.5 px-4 text-xs font-mono-tabular text-ink/70 whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs font-mono-tabular text-ink/70 whitespace-nowrap">
                       {party.phone || '—'}
                     </td>
                     {partyFields.map((cf) => {
@@ -265,7 +259,7 @@ export function PartiesView() {
                       return (
                         <td
                           key={cf.id}
-                          className="py-2.5 px-4 text-xs text-ink/80 whitespace-nowrap"
+                          className="py-3 px-5 text-xs text-ink/80 whitespace-nowrap"
                         >
                           {val === undefined || val === ''
                             ? '—'
@@ -277,7 +271,7 @@ export function PartiesView() {
                         </td>
                       );
                     })}
-                    <td className="py-2.5 px-4 text-end whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                    <td className="py-3 px-5 text-end whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                       <div className="inline-flex items-center justify-end gap-2">
                         {can('entities:write') && (
                           <ActionTooltip label={tr('editParty')} side="top">

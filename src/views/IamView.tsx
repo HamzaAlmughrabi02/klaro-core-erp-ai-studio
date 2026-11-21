@@ -282,7 +282,7 @@ export function IamView() {
       )}
 
       {/* Segmented Section Tabs */}
-      <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface border border-line self-start">
+      <div className="klaro-tabs self-start">
         <button
           type="button"
           onClick={() => setActiveTab('users')}
@@ -314,17 +314,17 @@ export function IamView() {
       {activeTab === 'users' ? (
         <div className="space-y-8">
           {/* Users Table */}
-          <div className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+          <div className="rounded-[20px] border border-line bg-surface overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-start border-collapse">
                 <thead>
-                  <tr className="bg-canvas border-b border-line text-xs font-semibold text-ink/70">
-                    <th className="py-3 px-4 text-start whitespace-nowrap">{tr('displayName')}</th>
-                    <th className="py-3 px-4 text-start whitespace-nowrap">{tr('email')}</th>
-                    <th className="py-3 px-4 text-start whitespace-nowrap">{tr('role')}</th>
-                    <th className="py-3 px-4 text-start whitespace-nowrap">{tr('accountState')}</th>
+                  <tr className="bg-canvas border-b border-line text-xs font-semibold text-muted">
+                    <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('displayName')}</th>
+                    <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('email')}</th>
+                    <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('role')}</th>
+                    <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('accountState')}</th>
                     {canManageIam && (
-                      <th className="py-3 px-4 text-end whitespace-nowrap">{tr('actions')}</th>
+                      <th className="py-3.5 px-5 text-end whitespace-nowrap">{tr('actions')}</th>
                     )}
                   </tr>
                 </thead>
@@ -337,7 +337,7 @@ export function IamView() {
                         key={u.id}
                         className="h-12 hover:bg-surface transition-colors duration-200"
                       >
-                        <td className="py-2.5 px-4 font-semibold text-ink whitespace-nowrap">
+                        <td className="py-3 px-5 font-semibold text-ink whitespace-nowrap">
                           <div className="flex items-center gap-2.5">
                             <span>{u.displayName}</span>
                             {userTempList.length > 0 && (
@@ -359,10 +359,10 @@ export function IamView() {
                             )}
                           </div>
                         </td>
-                        <td className="py-2.5 px-4 text-xs text-ink/70 whitespace-nowrap">
+                        <td className="py-3 px-5 text-xs text-ink/70 whitespace-nowrap">
                           {u.email}
                         </td>
-                        <td className="py-2.5 px-4 whitespace-nowrap">
+                        <td className="py-3 px-5 whitespace-nowrap">
                           {canManageIam && !isSelf ? (
                             <select
                               value={u.roleCode}
@@ -379,7 +379,7 @@ export function IamView() {
                             </span>
                           )}
                         </td>
-                        <td className="py-2.5 px-4 whitespace-nowrap">
+                        <td className="py-3 px-5 whitespace-nowrap">
                           {canManageIam && !isSelf ? (
                             <button
                               onClick={() => void handleToggleActive(u)}
@@ -400,7 +400,7 @@ export function IamView() {
                           )}
                         </td>
                         {canManageIam && (
-                          <td className="py-2.5 px-4 text-end whitespace-nowrap">
+                          <td className="py-3 px-5 text-end whitespace-nowrap">
                             <ActionTooltip label={tr('grantTempPermission')} side="top">
                               <button
                                 type="button"
@@ -424,12 +424,12 @@ export function IamView() {
           {/* RBAC Permissions Matrix */}
           <div className="space-y-3">
             <h2 className="text-base font-bold text-ink">{tr('permissionsMatrix')}</h2>
-            <div className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+            <div className="rounded-[20px] border border-line bg-surface overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-start border-collapse">
                   <thead>
-                    <tr className="bg-canvas border-b border-line text-xs font-semibold text-ink/70">
-                      <th className="py-3 px-4 text-start whitespace-nowrap">
+                    <tr className="bg-canvas border-b border-line text-xs font-semibold text-muted">
+                      <th className="py-3.5 px-5 text-start whitespace-nowrap">
                         {tr('permissionsMatrix')}
                       </th>
                       {CORE_ROLE_TEMPLATES.map((r) => (
@@ -442,7 +442,7 @@ export function IamView() {
                   <tbody className="divide-y divide-line text-xs">
                     {ALL_PERMISSIONS.map((perm) => (
                       <tr key={perm} className="h-10 hover:bg-surface transition-colors duration-200">
-                        <td className="py-2.5 px-4 font-medium text-ink">
+                        <td className="py-3 px-5 font-medium text-ink">
                           {tr(PERM_LABEL_KEYS[perm])}
                           <span className="font-mono-tabular text-muted ms-2">
                             ({perm})
@@ -451,7 +451,7 @@ export function IamView() {
                         {CORE_ROLE_TEMPLATES.map((r) => {
                           const granted = hasPermission(r.code, perm, roles);
                           return (
-                            <td key={r.code} className="py-2.5 px-4 text-center">
+                            <td key={r.code} className="py-3 px-5 text-center">
                               {granted ? (
                                 <Check className="w-4 h-4 text-success mx-auto" />
                               ) : (
@@ -470,7 +470,7 @@ export function IamView() {
         </div>
       ) : (
         /* Active Temporary Permissions Table */
-        <div className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+        <div className="rounded-[20px] border border-line bg-surface overflow-hidden">
           {activeDelegations.length === 0 ? (
             <EmptyState
               variant="audit"
@@ -483,16 +483,16 @@ export function IamView() {
             <div className="overflow-x-auto">
               <table className="w-full text-start border-collapse">
                 <thead>
-                  <tr className="bg-canvas border-b border-line text-xs font-semibold text-ink/70">
-                    <th className="py-3 px-4 text-start whitespace-nowrap">{tr('displayName')}</th>
-                    <th className="py-3 px-4 text-start whitespace-nowrap">
+                  <tr className="bg-canvas border-b border-line text-xs font-semibold text-muted">
+                    <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('displayName')}</th>
+                    <th className="py-3.5 px-5 text-start whitespace-nowrap">
                       {tr('selectPermission')}
                     </th>
-                    <th className="py-3 px-4 text-start whitespace-nowrap">{tr('grantedBy')}</th>
-                    <th className="py-3 px-4 text-start whitespace-nowrap">{tr('expiresIn')}</th>
-                    <th className="py-3 px-4 text-start whitespace-nowrap">{tr('expiresAt')}</th>
+                    <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('grantedBy')}</th>
+                    <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('expiresIn')}</th>
+                    <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('expiresAt')}</th>
                     {canManageIam && (
-                      <th className="py-3 px-4 text-end whitespace-nowrap">{tr('actions')}</th>
+                      <th className="py-3.5 px-5 text-end whitespace-nowrap">{tr('actions')}</th>
                     )}
                   </tr>
                 </thead>
@@ -505,11 +505,11 @@ export function IamView() {
                         key={del.id}
                         className="h-12 hover:bg-surface transition-colors duration-200"
                       >
-                        <td className="py-2.5 px-4 whitespace-nowrap">
+                        <td className="py-3 px-5 whitespace-nowrap">
                           <div className="font-semibold text-ink">{del.userName}</div>
                           <div className="text-xs text-muted">{del.userEmail}</div>
                         </td>
-                        <td className="py-2.5 px-4 whitespace-nowrap">
+                        <td className="py-3 px-5 whitespace-nowrap">
                           <div className="text-xs font-semibold text-ink">
                             {tr(PERM_LABEL_KEYS[del.permission])}
                           </div>
@@ -517,10 +517,10 @@ export function IamView() {
                             {del.permission}
                           </div>
                         </td>
-                        <td className="py-2.5 px-4 text-xs font-medium text-ink/80 whitespace-nowrap">
+                        <td className="py-3 px-5 text-xs font-medium text-ink/80 whitespace-nowrap">
                           {del.grantedByName}
                         </td>
-                        <td className="py-2.5 px-4 whitespace-nowrap">
+                        <td className="py-3 px-5 whitespace-nowrap">
                           <span
                             className={`inline-flex items-center gap-1.5 font-mono-tabular text-xs font-bold tabular-nums ${
                               isUrgent ? 'text-brand' : 'text-success'
@@ -532,11 +532,11 @@ export function IamView() {
                             </span>
                           </span>
                         </td>
-                        <td className="py-2.5 px-4 font-mono-tabular text-xs text-muted whitespace-nowrap">
+                        <td className="py-3 px-5 font-mono-tabular text-xs text-muted whitespace-nowrap">
                           {del.expiresAt.toLocaleString()}
                         </td>
                         {canManageIam && (
-                          <td className="py-2.5 px-4 text-end whitespace-nowrap">
+                          <td className="py-3 px-5 text-end whitespace-nowrap">
                             <ActionTooltip label={tr('revokeAccess')} side="top">
                               <button
                                 type="button"

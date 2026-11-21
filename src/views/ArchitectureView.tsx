@@ -188,7 +188,7 @@ export function ArchitectureView() {
       </section>
 
       {/* Section 2: Schema Summary (Total counts of Parties, Items, Documents, Custom Fields) */}
-      <section className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+      <section className="rounded-[20px] border border-line bg-surface overflow-hidden">
         <div className="px-6 py-4 bg-night text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <Database className="w-4 h-4 text-brand" />
@@ -255,7 +255,7 @@ export function ArchitectureView() {
       </section>
 
       {/* Live Dynamic Schema Registry */}
-      <section className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+      <section className="rounded-[20px] border border-line bg-surface overflow-hidden">
         <div className="px-6 py-4 bg-surface border-b border-line flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Database className="w-4 h-4 text-ink" />
@@ -281,30 +281,30 @@ export function ArchitectureView() {
             <table className="w-full text-start border-collapse">
               <thead>
                 <tr className="bg-surface/70 border-b border-line text-xs font-semibold text-ink/70">
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('targetEntity')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('fieldName')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('fieldKey')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('fieldType')}</th>
-                  <th className="py-3 px-4 text-start whitespace-nowrap">{tr('isRequiredField')}</th>
-                  <th className="py-3 px-4 text-end whitespace-nowrap">{tr('fieldStatus')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('targetEntity')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('fieldName')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('fieldKey')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('fieldType')}</th>
+                  <th className="py-3.5 px-5 text-start whitespace-nowrap">{tr('isRequiredField')}</th>
+                  <th className="py-3.5 px-5 text-end whitespace-nowrap">{tr('fieldStatus')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line text-sm">
                 {customFields.map((cf) => (
                   <tr key={cf.id} className="h-11 hover:bg-surface transition-colors">
-                    <td className="py-2.5 px-4 text-xs font-semibold text-ink whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs font-semibold text-ink whitespace-nowrap">
                       {tr(`entity${cf.entityType}`)}
                     </td>
-                    <td className="py-2.5 px-4 font-semibold text-ink whitespace-nowrap">
+                    <td className="py-3 px-5 font-semibold text-ink whitespace-nowrap">
                       {getFieldLabel(cf, lang)}
                     </td>
-                    <td className="py-2.5 px-4 font-mono-tabular text-xs text-muted whitespace-nowrap">
+                    <td className="py-3 px-5 font-mono-tabular text-xs text-muted whitespace-nowrap">
                       {cf.fieldKey}
                     </td>
-                    <td className="py-2.5 px-4 text-xs text-ink/80 whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs text-ink/80 whitespace-nowrap">
                       {tr(`field${cf.fieldType}`)}
                     </td>
-                    <td className="py-2.5 px-4 text-xs whitespace-nowrap">
+                    <td className="py-3 px-5 text-xs whitespace-nowrap">
                       <span
                         className={
                           cf.isRequired ? 'text-brand font-semibold' : 'text-muted'
@@ -313,7 +313,7 @@ export function ArchitectureView() {
                         {cf.isRequired ? tr('required') : tr('optional')}
                       </span>
                     </td>
-                    <td className="py-2.5 px-4 text-end text-xs whitespace-nowrap">
+                    <td className="py-3 px-5 text-end text-xs whitespace-nowrap">
                       <span
                         className={`inline-flex items-center gap-1 font-semibold ${
                           cf.isActive ? 'text-success' : 'text-muted'
@@ -335,7 +335,7 @@ export function ArchitectureView() {
 
       {/* Folder Structure & ERD Blueprints */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <section className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+        <section className="rounded-[20px] border border-line bg-surface overflow-hidden">
           <div className="px-6 py-4 bg-surface border-b border-line">
             <h2 className="text-sm font-bold text-ink">
               {lang === 'ar' ? 'هيكل المجلدات (Modular Monolith)' : 'Modular Monolith Folder Structure'}
@@ -349,7 +349,7 @@ export function ArchitectureView() {
           </pre>
         </section>
 
-        <section className="rounded-2xl shadow-[var(--shadow-card)] border border-line bg-canvas overflow-hidden">
+        <section className="rounded-[20px] border border-line bg-surface overflow-hidden">
           <div className="px-6 py-4 bg-surface border-b border-line">
             <h2 className="text-sm font-bold text-ink">
               {lang === 'ar' ? 'مخطط علاقات الكيانات (Core ERD)' : 'Core Entity-Relationship Diagram (ERD)'}
